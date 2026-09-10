@@ -2,9 +2,7 @@ package com.example.gestor_gimnasio.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.gestor_gimnasio.model.Socio;
 import com.example.gestor_gimnasio.service.SocioService;
@@ -23,5 +21,15 @@ public class SocioController {
     @GetMapping()
     public List<Socio> getAllSocios() {
         return socioService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Socio getSocioById(@PathVariable Long id) {
+        return socioService.findById(id);
+    }
+
+    @PostMapping()
+    public Socio createSocio(@RequestBody Socio socio) {
+        return socioService.save(socio);
     }
 }

@@ -27,4 +27,8 @@ public class SocioService {
     public Socio save(Socio socio) {
         return socioRepository.save(socio);
     }
+
+    public Socio findById(Long id) {
+        return socioRepository.findById(id).orElse(null);
+    }
 }
