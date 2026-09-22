@@ -43,4 +43,7 @@ public class Socio {
 
     @Column(name = "plan_id")
     private Long planId;
+
+    @Column(nullable = false)
+    private Boolean activo = true;
 }
