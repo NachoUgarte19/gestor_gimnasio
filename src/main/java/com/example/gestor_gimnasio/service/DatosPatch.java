@@ -112,6 +112,7 @@ public class DatosPatch {
     }
 
     public <T> void validarEntidad(T entidad) {
+        // PATCH recibe un mapa: validamos la entidad completa después de aplicar los cambios.
         Set<ConstraintViolation<T>> errores = validator.validate(entidad);
         if (!errores.isEmpty()) {
             throw new ConstraintViolationException(errores);

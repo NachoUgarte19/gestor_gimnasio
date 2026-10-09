@@ -2,7 +2,7 @@
 --  GESTOR DE GIMNASIO - Base de datos (Etapa 1)
 --  Motor: MySQL / MariaDB (XAMPP)
 --
---  Crea la base "gimnasio_db", sus 6 tablas y datos de ejemplo.
+--  Crea la base "gimnasio_db", sus 5 tablas y datos de ejemplo.
 --  ATENCIÓN: borra las tablas si ya existen (se pierden los datos cargados).
 -- =============================================================
 
@@ -25,11 +25,12 @@ DROP TABLE IF EXISTS planes;
 --  TABLAS
 -- =============================================================
 
--- Entidad Plan
+-- Entidad Plan. Los beneficios son descriptivos y no limitan las reservas.
 CREATE TABLE planes (
-    id      BIGINT       NOT NULL AUTO_INCREMENT,
-    nombre  VARCHAR(100) NOT NULL,
-    precio  DOUBLE       NOT NULL,
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    nombre      VARCHAR(100) NOT NULL,
+    precio      DOUBLE       NOT NULL,
+    beneficios  VARCHAR(500),
     PRIMARY KEY (id)
 ) ENGINE = InnoDB;
 
@@ -42,15 +43,6 @@ CREATE TABLE clases (
     horario     VARCHAR(5)   NOT NULL,
     cupo        INT          NOT NULL,
     PRIMARY KEY (id)
-) ENGINE = InnoDB;
-
--- Tabla intermedia de la relación N a N entre Plan y Clase (@ManyToMany)
-CREATE TABLE plan_clase (
-    plan_id   BIGINT NOT NULL,
-    clase_id  BIGINT NOT NULL,
-    PRIMARY KEY (plan_id, clase_id),
-    CONSTRAINT fk_plan_clase_plan  FOREIGN KEY (plan_id)  REFERENCES planes (id),
-    CONSTRAINT fk_plan_clase_clase FOREIGN KEY (clase_id) REFERENCES clases (id)
 ) ENGINE = InnoDB;
 
 -- Entidad Socio. Relación N a 1 con Plan (@ManyToOne) mediante plan_id
@@ -98,22 +90,16 @@ CREATE TABLE pagos (
 --  DATOS DE EJEMPLO
 -- =============================================================
 
-INSERT INTO planes (id, nombre, precio) VALUES
-    (1, 'Plan Básico',      25000),
-    (2, 'Plan Full',        35000),
-    (3, 'Plan Estudiante',  20000);
+INSERT INTO planes (id, nombre, precio, beneficios) VALUES
+    (1, 'Plan Básico',      25000, NULL),
+    (2, 'Plan Full',        35000, '10% de descuento en bebidas'),
+    (3, 'Plan Estudiante',  20000, NULL);
 
 INSERT INTO clases (id, nombre, instructor, dia, horario, cupo) VALUES
     (1, 'Spinning',   'Laura Gómez',   'Lunes',     '19:00', 20),
     (2, 'Yoga',       'Martín Ruiz',   'Martes',    '09:30', 15),
     (3, 'Funcional',  'Carla Díaz',    'Miércoles', '18:00', 25),
     (4, 'Zumba',      'Diego Sosa',    'Jueves',    '20:00', 30);
-
--- Qué clases incluye cada plan (relación N a N)
-INSERT INTO plan_clase (plan_id, clase_id) VALUES
-    (1, 3),                          -- Básico: solo Funcional
-    (2, 1), (2, 2), (2, 3), (2, 4),  -- Full: todas las clases
-    (3, 2), (3, 3);                  -- Estudiante: Yoga y Funcional
 
 INSERT INTO socios (id, dni, nombre, apellido, email, telefono, fecha_nacimiento, fecha_ingreso, plan_id, activo) VALUES
     (1, '38111222', 'Lucía',   'Fernández', 'lucia.fernandez@mail.com', '1150001111', '1995-03-12', '2026-03-01', 2, 1),

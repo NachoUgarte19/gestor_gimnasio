@@ -50,8 +50,7 @@ public class Socio {
     @Column(name = "fecha_ingreso")
     private LocalDate fechaIngreso;
 
-    // RELACIÓN N a 1: muchos socios pueden tener el mismo plan.
-    // En la tabla "socios" se crea la columna plan_id (clave foránea a planes.id).
+    // El plan es opcional y no limita las clases disponibles para reservar.
     @ManyToOne
     @JoinColumn(name = "plan_id")
     private Plan plan;

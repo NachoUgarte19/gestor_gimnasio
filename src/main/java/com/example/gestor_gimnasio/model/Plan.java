@@ -1,21 +1,15 @@
 package com.example.gestor_gimnasio.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -37,13 +31,8 @@ public class Plan {
     @Column(nullable = false)
     private Double precio;
 
-    // RELACIÓN N a N: un plan incluye varias clases y una clase puede estar en varios planes.
-    // Se guarda en una tabla intermedia "plan_clase" con dos columnas: plan_id y clase_id.
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "plan_clase",
-        joinColumns = @JoinColumn(name = "plan_id"),
-        inverseJoinColumns = @JoinColumn(name = "clase_id")
-    )
-    private List<Clase> clases = new ArrayList<>();
+    // Descripción comercial; no condiciona las reservas ni calcula descuentos.
+    @Size(max = 500, message = "Los beneficios no pueden superar los 500 caracteres")
+    @Column(length = 500)
+    private String beneficios;
 }

@@ -25,7 +25,6 @@ public class Pago {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // RELACIÓN N a 1: un socio hace muchos pagos
     @NotNull(message = "El socio es obligatorio")
     @ManyToOne
     @JoinColumn(name = "socio_id", nullable = false)
@@ -36,11 +35,9 @@ public class Pago {
     @Column(nullable = false)
     private Double monto;
 
-    // Si no se envía, el service pone la fecha de hoy
     @Column(nullable = false)
     private LocalDate fecha;
 
-    // Ej: "Efectivo", "Transferencia", "Tarjeta"
     @NotBlank(message = "El método de pago es obligatorio")
     @Column(name = "metodo_pago", nullable = false, length = 30)
     private String metodoPago;

@@ -23,19 +23,17 @@ public class Reserva {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // RELACIÓN N a 1: un socio puede tener muchas reservas
     @NotNull(message = "El socio es obligatorio")
     @ManyToOne
     @JoinColumn(name = "socio_id", nullable = false)
     private Socio socio;
 
-    // RELACIÓN N a 1: una clase puede tener muchas reservas
     @NotNull(message = "La clase es obligatoria")
     @ManyToOne
     @JoinColumn(name = "clase_id", nullable = false)
     private Clase clase;
 
-    // Día al que el socio va a asistir. Formato JSON: "2026-10-05"
+    // Fecha concreta de asistencia; la clase define el día y horario recurrentes.
     @NotNull(message = "La fecha es obligatoria")
     @Column(nullable = false)
     private LocalDate fecha;

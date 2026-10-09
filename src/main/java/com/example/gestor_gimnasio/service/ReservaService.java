@@ -27,10 +27,7 @@ public class ReservaService {
     private final ClaseRepository claseRepository;
     private final DatosPatch datosPatch;
 
-    public ReservaService(ReservaRepository reservaRepository,
-                          SocioRepository socioRepository,
-                          ClaseRepository claseRepository,
-                          DatosPatch datosPatch) {
+    public ReservaService(ReservaRepository reservaRepository, SocioRepository socioRepository, ClaseRepository claseRepository, DatosPatch datosPatch) {
         this.reservaRepository = reservaRepository;
         this.socioRepository = socioRepository;
         this.claseRepository = claseRepository;
@@ -46,17 +43,15 @@ public class ReservaService {
     }
 
     public Reserva save(Reserva reserva) {
-        // El JSON trae "socio": { "id": 1 } y "clase": { "id": 1 }
         Socio socio = buscarSocio(reserva.getSocio().getId());
         Clase clase = buscarClase(reserva.getClase().getId());
 
-        // LÓGICA DE NEGOCIO
-        // 1. Un socio dado de baja no puede reservar
+        // El plan del socio no limita las clases que puede reservar.
         if (!socio.getActivo()) {
             throw new IllegalStateException("El socio está inactivo y no puede reservar");
         }
 
-        // 2. La clase no puede superar su cupo en esa fecha
+        // El cupo se controla para la fecha concreta, no para toda la clase semanal.
         long reservasDelDia = reservaRepository.countByClaseIdAndFecha(clase.getId(), reserva.getFecha());
         if (reservasDelDia >= clase.getCupo()) {
             throw new IllegalStateException("La clase no tiene cupo disponible para esa fecha");
@@ -65,21 +60,6 @@ public class ReservaService {
         reserva.setSocio(socio);
         reserva.setClase(clase);
         return reservaRepository.save(reserva);
-    }
-
-    public Optional<Reserva> update(Long id, Reserva datosNuevos) {
-        Optional<Reserva> reservaEncontrada = reservaRepository.findById(id);
-
-        if (reservaEncontrada.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Reserva reserva = reservaEncontrada.get();
-        reserva.setSocio(buscarSocio(datosNuevos.getSocio().getId()));
-        reserva.setClase(buscarClase(datosNuevos.getClase().getId()));
-        reserva.setFecha(datosNuevos.getFecha());
-
-        return Optional.of(reservaRepository.save(reserva));
     }
 
     public Optional<Reserva> patch(Long id, Map<String, Object> cambios) {
@@ -107,11 +87,10 @@ public class ReservaService {
         if (!reserva.getSocio().getActivo()) {
             throw new IllegalStateException("El socio está inactivo y no puede reservar");
         }
-        boolean mismoTurno = Objects.equals(claseAnteriorId, reserva.getClase().getId())
-                && Objects.equals(fechaAnterior, reserva.getFecha());
+        // La reserva actual ya ocupa un lugar: solo comprobamos cupo si cambia de clase o fecha.
+        boolean mismoTurno = Objects.equals(claseAnteriorId, reserva.getClase().getId()) && Objects.equals(fechaAnterior, reserva.getFecha());
         if (!mismoTurno) {
-            long reservasDelDia = reservaRepository.countByClaseIdAndFecha(
-                    reserva.getClase().getId(), reserva.getFecha());
+            long reservasDelDia = reservaRepository.countByClaseIdAndFecha(reserva.getClase().getId(), reserva.getFecha());
             if (reservasDelDia >= reserva.getClase().getCupo()) {
                 throw new IllegalStateException("La clase no tiene cupo disponible para esa fecha");
             }
@@ -129,12 +108,10 @@ public class ReservaService {
     }
 
     private Socio buscarSocio(Long id) {
-        return socioRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Socio no encontrado"));
+        return socioRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Socio no encontrado"));
     }
 
     private Clase buscarClase(Long id) {
-        return claseRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Clase no encontrada"));
+        return claseRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Clase no encontrada"));
     }
 }

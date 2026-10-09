@@ -29,12 +29,11 @@ public class Clase {
     @Column(nullable = false, length = 100)
     private String instructor;
 
-    // Ej: "Lunes"
+    // Define la clase semanal; cada reserva guarda la fecha concreta de asistencia.
     @NotBlank(message = "El día es obligatorio")
     @Column(nullable = false, length = 20)
     private String dia;
 
-    // Ej: "19:00"
     @NotBlank(message = "El horario es obligatorio")
     @Column(nullable = false, length = 5)
     private String horario;

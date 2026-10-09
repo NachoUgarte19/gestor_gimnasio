@@ -23,7 +23,8 @@ public class ClaseService {
     private final ReservaRepository reservaRepository;
     private final DatosPatch datosPatch;
 
-    public ClaseService(ClaseRepository claseRepository, ReservaRepository reservaRepository, DatosPatch datosPatch) {
+    public ClaseService(ClaseRepository claseRepository, ReservaRepository reservaRepository,
+                        DatosPatch datosPatch) {
         this.claseRepository = claseRepository;
         this.reservaRepository = reservaRepository;
         this.datosPatch = datosPatch;
@@ -39,23 +40,6 @@ public class ClaseService {
 
     public Clase save(Clase clase) {
         return claseRepository.save(clase);
-    }
-
-    public Optional<Clase> update(Long id, Clase datosNuevos) {
-        Optional<Clase> claseEncontrada = claseRepository.findById(id);
-
-        if (claseEncontrada.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Clase clase = claseEncontrada.get();
-        clase.setNombre(datosNuevos.getNombre());
-        clase.setInstructor(datosNuevos.getInstructor());
-        clase.setDia(datosNuevos.getDia());
-        clase.setHorario(datosNuevos.getHorario());
-        clase.setCupo(datosNuevos.getCupo());
-
-        return Optional.of(claseRepository.save(clase));
     }
 
     public Optional<Clase> patch(Long id, Map<String, Object> cambios) {
@@ -81,6 +65,7 @@ public class ClaseService {
 
         datosPatch.validarEntidad(clase);
         if (cambios.containsKey("cupo")) {
+            // El cupo es por fecha: una clase semanal puede tener reservas en varios días.
             Map<LocalDate, Long> reservasPorFecha = reservaRepository.findByClaseId(id).stream()
                     .collect(Collectors.groupingBy(reserva -> reserva.getFecha(), Collectors.counting()));
             if (reservasPorFecha.values().stream().anyMatch(cantidad -> cantidad > clase.getCupo())) {
@@ -95,6 +80,14 @@ public class ClaseService {
         if (!claseRepository.existsById(id)) {
             return false;
         }
+
+        // Evitamos borrar reservas históricas en cascada junto con la clase.
+        long cantidadReservas = reservaRepository.countByClaseId(id);
+        if (cantidadReservas > 0) {
+            throw new IllegalStateException("No se puede eliminar la clase porque tiene "
+                    + cantidadReservas + " reserva(s). Eliminá o reasigná esas reservas primero");
+        }
+
         claseRepository.deleteById(id);
         return true;
     }

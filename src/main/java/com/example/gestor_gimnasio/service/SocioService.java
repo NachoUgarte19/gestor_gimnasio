@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.example.gestor_gimnasio.model.Plan;
 import com.example.gestor_gimnasio.model.Socio;
 import com.example.gestor_gimnasio.repository.PlanRepository;
+import com.example.gestor_gimnasio.repository.PagoRepository;
+import com.example.gestor_gimnasio.repository.ReservaRepository;
 import com.example.gestor_gimnasio.repository.SocioRepository;
 
 import jakarta.transaction.Transactional;
@@ -22,12 +24,17 @@ public class SocioService {
 
     private final SocioRepository socioRepository;
     private final PlanRepository planRepository;
+    private final ReservaRepository reservaRepository;
+    private final PagoRepository pagoRepository;
     private final DatosPatch datosPatch;
 
-    // Inyección de dependencia: Spring crea los repositories y se los entrega al service automáticamente
-    public SocioService(SocioRepository socioRepository, PlanRepository planRepository, DatosPatch datosPatch) {
+    public SocioService(SocioRepository socioRepository, PlanRepository planRepository,
+                        ReservaRepository reservaRepository, PagoRepository pagoRepository,
+                        DatosPatch datosPatch) {
         this.socioRepository = socioRepository;
         this.planRepository = planRepository;
+        this.reservaRepository = reservaRepository;
+        this.pagoRepository = pagoRepository;
         this.datosPatch = datosPatch;
     }
 
@@ -40,12 +47,11 @@ public class SocioService {
     }
 
     public Optional<Socio> findById(Long id) {
-        // Optional representa un resultado que puede contener un socio o estar vacío.
         return socioRepository.findById(id);
     }
 
     public Socio save(Socio socio) {
-        // Todo socio nuevo empieza habilitado
+        // El alta siempre empieza activa; el estado posterior se cambia con PATCH.
         socio.setActivo(true);
 
         // Si no se informa la fecha de ingreso, se usa la de hoy
@@ -53,34 +59,10 @@ public class SocioService {
             socio.setFechaIngreso(LocalDate.now());
         }
 
-        // El JSON trae "plan": { "id": 1 }. Buscamos el plan completo en la base.
+        // El cliente envía solo el id; persistimos una referencia existente.
         socio.setPlan(buscarPlan(socio.getPlan()));
 
         return socioRepository.save(socio);
-    }
-
-    public Optional<Socio> update(Long id, Socio datosNuevos) {
-        Optional<Socio> socioEncontrado = socioRepository.findById(id);
-
-        if (socioEncontrado.isEmpty()) {
-            // No podemos modificar un socio que no existe
-            return Optional.empty();
-        }
-
-        Socio socio = socioEncontrado.get();
-
-        // Modificamos el objeto que fue recuperado de la base de datos
-        socio.setDni(datosNuevos.getDni());
-        socio.setNombre(datosNuevos.getNombre());
-        socio.setApellido(datosNuevos.getApellido());
-        socio.setEmail(datosNuevos.getEmail());
-        socio.setTelefono(datosNuevos.getTelefono());
-        socio.setFechaNacimiento(datosNuevos.getFechaNacimiento());
-        socio.setFechaIngreso(datosNuevos.getFechaIngreso());
-        socio.setPlan(buscarPlan(datosNuevos.getPlan()));
-
-        // save actualiza porque socio ya tiene un ID existente
-        return Optional.of(socioRepository.save(socio));
     }
 
     public Optional<Socio> patch(Long id, Map<String, Object> cambios) {
@@ -114,24 +96,16 @@ public class SocioService {
         return Optional.of(socioRepository.save(socio));
     }
 
-    // Modificación parcial: solo cambia el estado (baja / alta lógica)
-    public Optional<Socio> changeStatus(Long id, boolean activo) {
-        Optional<Socio> socioEncontrado = socioRepository.findById(id);
-
-        if (socioEncontrado.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Socio socio = socioEncontrado.get();
-        socio.setActivo(activo);
-
-        return Optional.of(socioRepository.save(socio));
-    }
-
     public boolean deleteById(Long id) {
-        // Primero verificamos si el socio existe
         if (!socioRepository.existsById(id)) {
             return false;
+        }
+        // Las referencias de reservas y pagos impiden borrar físicamente al socio.
+        if (reservaRepository.existsBySocioId(id)) {
+            throw new IllegalStateException("No se puede eliminar el socio porque tiene reservas registradas");
+        }
+        if (pagoRepository.existsBySocioId(id)) {
+            throw new IllegalStateException("No se puede eliminar el socio porque tiene pagos registrados");
         }
         socioRepository.deleteById(id);
         return true;

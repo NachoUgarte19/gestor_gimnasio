@@ -40,7 +40,7 @@ public class PagoService {
     }
 
     public Pago save(Pago pago) {
-        // El JSON trae "socio": { "id": 1 }. Buscamos el socio completo.
+        // El cliente envía solo el id; persistimos una referencia existente.
         pago.setSocio(buscarSocio(pago.getSocio().getId()));
 
         // Si no se informa la fecha, el pago se registra hoy
@@ -49,24 +49,6 @@ public class PagoService {
         }
 
         return pagoRepository.save(pago);
-    }
-
-    public Optional<Pago> update(Long id, Pago datosNuevos) {
-        Optional<Pago> pagoEncontrado = pagoRepository.findById(id);
-
-        if (pagoEncontrado.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Pago pago = pagoEncontrado.get();
-        pago.setSocio(buscarSocio(datosNuevos.getSocio().getId()));
-        pago.setMonto(datosNuevos.getMonto());
-        pago.setMetodoPago(datosNuevos.getMetodoPago());
-        if (datosNuevos.getFecha() != null) {
-            pago.setFecha(datosNuevos.getFecha());
-        }
-
-        return Optional.of(pagoRepository.save(pago));
     }
 
     public Optional<Pago> patch(Long id, Map<String, Object> cambios) {
