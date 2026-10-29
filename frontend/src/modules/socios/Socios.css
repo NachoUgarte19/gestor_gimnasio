@@ -1,0 +1,111 @@
+.socios-resumen {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.resumen-card {
+  display: grid;
+  gap: 10px;
+  padding: 20px 22px;
+  border: 1px solid #dce5ee;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.resumen-card span { color: #728397; font-size: 12px; }
+.resumen-card strong { color: #203449; font-size: 27px; font-weight: 650; }
+
+.socios-panel {
+  overflow: hidden;
+  border: 1px solid #dce5ee;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.socios-panel-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+}
+
+.socios-panel-header h2 { margin: 0 0 5px; font-size: 17px; font-weight: 650; }
+.socios-panel-header p { margin: 0; color: #8192a3; font-size: 12px; }
+.socios-busqueda { display: grid; gap: 6px; }
+.socios-busqueda label { color: #566b80; font-size: 11px; font-weight: 650; }
+
+.socios-busqueda input {
+  width: 230px;
+  min-height: 36px;
+  padding: 0 11px;
+  border: 1px solid #dce5ee;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #203449;
+  font: inherit;
+  font-size: 12px;
+}
+
+.socios-busqueda input:focus { border-color: #2b6aa5; box-shadow: 0 0 0 3px #d9ebfb; }
+.socios-tabla-scroll { overflow-x: auto; }
+.socios-tabla { width: 100%; min-width: 1000px; border-collapse: collapse; text-align: left; }
+
+.socios-tabla th {
+  padding: 12px 18px;
+  border-top: 1px solid #e7edf3;
+  border-bottom: 1px solid #e7edf3;
+  background: #f7f9fb;
+  color: #8192a3;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.socios-tabla td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #edf1f5;
+  color: #566b80;
+  font-size: 12px;
+}
+
+.socios-tabla tbody tr:last-child td { border-bottom: 0; }
+.socio-nombre { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+.socio-nombre strong { color: #203449; font-weight: 650; }
+
+.socio-avatar {
+  display: grid;
+  flex: 0 0 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eaf3fb;
+  color: #245f99;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.contacto-email { display: block; color: #203449; }
+.socios-tabla small { display: block; margin-top: 4px; color: #8192a3; font-size: 11px; }
+
+.estado-socio {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.estado-socio.activo { background: #e9f6ef; color: #278662; }
+.estado-socio.inactivo { background: #f0f3f6; color: #728397; }
+.socios-tabla .sin-resultados { padding: 30px; color: #728397; text-align: center; }
+
+@media (max-width: 700px) {
+  .socios-resumen { gap: 8px; }
+  .resumen-card { padding: 14px 12px; }
+  .resumen-card strong { font-size: 21px; }
+  .socios-panel-header { align-items: stretch; flex-direction: column; padding: 18px; }
+  .socios-busqueda input { width: 100%; }
+}

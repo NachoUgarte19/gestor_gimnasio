@@ -11,6 +11,10 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     long countByClaseIdAndFecha(Long claseId, LocalDate fecha);
 
+    boolean existsBySocioIdAndClaseIdAndFecha(Long socioId, Long claseId, LocalDate fecha);
+
+    boolean existsBySocioIdAndClaseIdAndFechaAndIdNot(Long socioId, Long claseId, LocalDate fecha, Long id);
+
     long countByClaseId(Long claseId);
 
     boolean existsBySocioId(Long socioId);

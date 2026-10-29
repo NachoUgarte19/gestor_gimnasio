@@ -1,6 +1,9 @@
 package com.example.gestor_gimnasio.service;
 
+import java.text.Normalizer;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -51,6 +54,12 @@ public class ReservaService {
             throw new IllegalStateException("El socio está inactivo y no puede reservar");
         }
 
+        validarDiaClase(clase, reserva.getFecha());
+
+        if (reservaRepository.existsBySocioIdAndClaseIdAndFecha(socio.getId(), clase.getId(), reserva.getFecha())) {
+            throw new IllegalStateException("El socio ya tiene una reserva para esa clase y fecha");
+        }
+
         // El cupo se controla para la fecha concreta, no para toda la clase semanal.
         long reservasDelDia = reservaRepository.countByClaseIdAndFecha(clase.getId(), reserva.getFecha());
         if (reservasDelDia >= clase.getCupo()) {
@@ -70,8 +79,9 @@ public class ReservaService {
 
         datosPatch.validarCampos(cambios, Set.of("socio", "clase", "fecha"));
         Reserva reserva = encontrada.get();
+        Long socioAnteriorId = reserva.getSocio().getId();
         Long claseAnteriorId = reserva.getClase().getId();
-        java.time.LocalDate fechaAnterior = reserva.getFecha();
+        LocalDate fechaAnterior = reserva.getFecha();
         for (Map.Entry<String, Object> cambio : cambios.entrySet()) {
             String campo = cambio.getKey();
             Object valor = cambio.getValue();
@@ -87,8 +97,23 @@ public class ReservaService {
         if (!reserva.getSocio().getActivo()) {
             throw new IllegalStateException("El socio está inactivo y no puede reservar");
         }
+
+        // Una reserva existente solo necesita revisar el día si cambia de clase o fecha.
+        boolean mismoTurno = Objects.equals(claseAnteriorId, reserva.getClase().getId())
+                && Objects.equals(fechaAnterior, reserva.getFecha());
+        if (!mismoTurno) {
+            validarDiaClase(reserva.getClase(), reserva.getFecha());
+        }
+
+        boolean mismoDestino = Objects.equals(socioAnteriorId, reserva.getSocio().getId())
+                && Objects.equals(claseAnteriorId, reserva.getClase().getId())
+                && Objects.equals(fechaAnterior, reserva.getFecha());
+        if (!mismoDestino && reservaRepository.existsBySocioIdAndClaseIdAndFechaAndIdNot(
+                reserva.getSocio().getId(), reserva.getClase().getId(), reserva.getFecha(), id)) {
+            throw new IllegalStateException("El socio ya tiene una reserva para esa clase y fecha");
+        }
+
         // La reserva actual ya ocupa un lugar: solo comprobamos cupo si cambia de clase o fecha.
-        boolean mismoTurno = Objects.equals(claseAnteriorId, reserva.getClase().getId()) && Objects.equals(fechaAnterior, reserva.getFecha());
         if (!mismoTurno) {
             long reservasDelDia = reservaRepository.countByClaseIdAndFecha(reserva.getClase().getId(), reserva.getFecha());
             if (reservasDelDia >= reserva.getClase().getCupo()) {
@@ -113,5 +138,24 @@ public class ReservaService {
 
     private Clase buscarClase(Long id) {
         return claseRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Clase no encontrada"));
+    }
+
+    private void validarDiaClase(Clase clase, LocalDate fecha) {
+        String diaFecha = switch (fecha.getDayOfWeek()) {
+            case MONDAY -> "lunes";
+            case TUESDAY -> "martes";
+            case WEDNESDAY -> "miercoles";
+            case THURSDAY -> "jueves";
+            case FRIDAY -> "viernes";
+            case SATURDAY -> "sabado";
+            case SUNDAY -> "domingo";
+        };
+        String diaClase = Normalizer.normalize(clase.getDia().trim(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT);
+        if (!diaFecha.equals(diaClase)) {
+            throw new IllegalStateException("La fecha " + fecha + " cae " + diaFecha
+                    + ", pero la clase se dicta los " + clase.getDia().toLowerCase(Locale.ROOT));
+        }
     }
 }

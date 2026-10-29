@@ -2,6 +2,8 @@
 
 Back-end en Java + Spring Boot + JPA + MySQL.
 
+Las pantallas del frontend React están en [frontend](frontend/README.md): Agenda, Socios, Clases, Planes y Pagos. La Agenda consulta clases y reservas reales. Socios, Clases y Planes permiten probar altas, cambios y bajas locales con datos de ejemplo.
+
 ## Cómo ejecutar
 1. Iniciar MySQL desde XAMPP (`localhost:3306`; las credenciales están en `application.properties`).
 2. (Opcional) Importar `database/gimnasio_db.sql` para crear las tablas y cargar datos de ejemplo.
@@ -84,6 +86,8 @@ o borrar con `null` mediante `PATCH`. Para probarlo en Postman, usar método `PA
 - Un socio inactivo no puede reservar (409).
 - Cualquier socio activo puede reservar cualquier clase, sin importar su plan.
 - Una clase no acepta más reservas que su cupo para una misma fecha (409).
+- La fecha de una reserva debe coincidir con el día semanal de la clase (409).
+- Un socio no puede reservar dos veces la misma clase para la misma fecha (409).
 - Si un pago no trae fecha, se registra con la de hoy.
 - Una clase con reservas no se puede eliminar: la API responde 409 indicando cuántas reservas la usan.
 - Un plan con socios asignados, o un socio con reservas o pagos, no se puede eliminar;
