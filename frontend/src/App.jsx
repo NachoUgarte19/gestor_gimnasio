@@ -1,76 +1,44 @@
-import { useState } from 'react'
-// Cada pantalla está en su propia carpeta dentro de modules.
-import Agenda from './modules/agenda/Agenda.jsx'
-import Socios from './modules/socios/Socios.jsx'
-import Clases from './modules/clases/Clases.jsx'
-import Planes from './modules/planes/Planes.jsx'
-import Pagos from './modules/pagos/Pagos.jsx'
+import { useEffect, useState } from 'react'
+import Administrador from './modules/administrador/Administrador.jsx'
+import Cliente from './modules/cliente/Cliente.jsx'
+import useDatosLocales from './hooks/useDatosLocales.js'
 import './App.css'
 
+// El fragmento de la dirección permite abrir directamente /#cliente.
+// Es un selector para la entrega, no un sistema de autenticación.
+function leerVista() {
+  return ['#cliente', '#contenido-cliente'].includes(window.location.hash) ? 'cliente' : 'administrador'
+}
+
 function App() {
-  // Esta variable guarda la sección elegida en el menú.
-  const [pantalla, setPantalla] = useState('agenda')
+  const [vista, setVista] = useState(leerVista)
+  const { datos, actualizarLista, restaurarDatos, errorGuardado } = useDatosLocales()
+
+  useEffect(() => {
+    function actualizarVista() {
+      setVista(leerVista())
+    }
+    window.addEventListener('hashchange', actualizarVista)
+    return () => window.removeEventListener('hashchange', actualizarVista)
+  }, [])
 
   return (
-    <div className="app-shell">
-      <aside className="sidebar">
-        <div className="brand"><span className="brand-mark">G</span>Gestor Gym</div>
-        <p className="nav-label">Gestión</p>
-        {/* Cada botón cambia pantalla. active marca la sección seleccionada. */}
-        <nav aria-label="Secciones">
-          <button
-            type="button"
-            className={'nav-item' + (pantalla === 'agenda' ? ' active' : '')}
-            aria-current={pantalla === 'agenda' ? 'page' : undefined}
-            onClick={() => setPantalla('agenda')}
-          >
-            Agenda
-          </button>
-          <button
-            type="button"
-            className={'nav-item' + (pantalla === 'socios' ? ' active' : '')}
-            aria-current={pantalla === 'socios' ? 'page' : undefined}
-            onClick={() => setPantalla('socios')}
-          >
-            Socios
-          </button>
-          <button
-            type="button"
-            className={'nav-item' + (pantalla === 'clases' ? ' active' : '')}
-            aria-current={pantalla === 'clases' ? 'page' : undefined}
-            onClick={() => setPantalla('clases')}
-          >
-            Clases
-          </button>
-          <button
-            type="button"
-            className={'nav-item' + (pantalla === 'planes' ? ' active' : '')}
-            aria-current={pantalla === 'planes' ? 'page' : undefined}
-            onClick={() => setPantalla('planes')}
-          >
-            Planes
-          </button>
-          <button
-            type="button"
-            className={'nav-item' + (pantalla === 'pagos' ? ' active' : '')}
-            aria-current={pantalla === 'pagos' ? 'page' : undefined}
-            onClick={() => setPantalla('pagos')}
-          >
-            Pagos
-          </button>
+    <>
+      <header className="view-switch">
+        <p><strong>Gestor Gym</strong><span>Demostración con datos locales compartidos</span></p>
+        <nav aria-label="Elegir vista de demostración">
+          <a href="#administrador" aria-current={vista === 'administrador' ? 'page' : undefined}>Administrador</a>
+          <a href="#cliente" aria-current={vista === 'cliente' ? 'page' : undefined}>Cliente</a>
         </nav>
-        <div className="sidebar-bottom"><strong>Recepción</strong><span>Panel del personal</span></div>
-      </aside>
-
-      <main className="main-content">
-        {/* Las secciones ocultas siguen montadas para conservar sus cambios locales. */}
-        <div hidden={pantalla !== 'agenda'}><Agenda /></div>
-        <div hidden={pantalla !== 'socios'}><Socios /></div>
-        <div hidden={pantalla !== 'clases'}><Clases /></div>
-        <div hidden={pantalla !== 'planes'}><Planes /></div>
-        <div hidden={pantalla !== 'pagos'}><Pagos /></div>
-      </main>
-    </div>
+      </header>
+      {vista === 'cliente' ? (
+        <Cliente datos={datos} actualizarLista={actualizarLista} errorGuardado={errorGuardado}
+          onIrAdministrador={() => { window.location.hash = 'administrador' }} />
+      ) : (
+        <Administrador datos={datos} actualizarLista={actualizarLista}
+          restaurarDatos={restaurarDatos} errorGuardado={errorGuardado} />
+      )}
+    </>
   )
 }
 

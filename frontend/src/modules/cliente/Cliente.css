@@ -1,0 +1,108 @@
+/* La vista del socio conserva los colores y tarjetas del mockup.
+   Sus clases empiezan con client- para no alterar el panel de administración. */
+.client-shell { max-width: 1050px; min-height: calc(100vh - 70px); margin: 0 auto; background: #fff; border-inline: 1px solid #e2e9f0; }
+.client-topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 24px 32px; }
+.client-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; }
+.client-small-avatar, .client-avatar { display: grid; place-items: center; flex-shrink: 0; border-radius: 50%; background: #e9f6ef; color: #216b4e; font-weight: 700; }
+.client-small-avatar { width: 36px; height: 36px; font-size: 12px; }
+.client-avatar { width: 56px; height: 56px; font-size: 18px; }
+.client-demo { margin: 0 32px; padding: 14px 16px; border: 1px solid #dce5ee; border-radius: 10px; background: #f5f8fb; }
+.client-demo label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 650; }
+.client-demo select { width: 100%; min-height: 40px; border: 1px solid #b7c7d6; border-radius: 7px; background: #fff; color: #203449; font: inherit; font-size: 14px; }
+.client-demo p { margin: 7px 0 0; color: #566b80; font-size: 12px; }
+.client-main { padding: 30px 32px; }
+.client-main:focus { outline: none; }
+.client-main p { line-height: 1.6; }
+.client-page-header { margin-bottom: 26px; }
+.client-page-header h1 { margin: 8px 0; }
+.client-page-header > p:not(.eyebrow) { margin: 0 0 16px; color: #566b80; }
+.client-page-header .eyebrow { line-height: 1.6; }
+.client-pill { display: inline-block; padding: 6px 10px; border-radius: 20px; background: #e9f6ef; color: #216b4e; font-size: 12px; font-weight: 650; }
+.client-pill-muted { background: #f0f3f6; color: #566b80; }
+.client-section-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.client-section-row h2, .client-next h2 { margin: 0; font-size: 18px; }
+.client-section-row > span { color: #566b80; font-size: 13px; }
+.client-week-controls { display: flex; gap: 6px; }
+.client-week-controls button { min-width: 40px; }
+.client-week-label { color: #566b80; font-size: 13px; }
+.client-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-bottom: 22px; }
+.client-day { display: grid; justify-items: center; gap: 8px; padding: 12px 4px; border: 1px solid #dce5ee; border-radius: 9px; background: #fff; color: #566b80; font: inherit; font-size: 13px; }
+.client-day strong { color: #203449; font-size: 18px; }
+.client-day.selected { border-color: #2b6aa5; background: #eaf3fb; color: #245f99; }
+.client-day.selected strong { color: #245f99; }
+.client-filters { display: grid; justify-items: start; gap: 10px; margin-bottom: 28px; }
+.client-filters > label { font-size: 13px; color: #566b80; font-weight: 600; }
+.client-filters > input { width: 100%; min-height: 42px; padding: 8px 12px; border: 1px solid #b7c7d6; border-radius: 8px; color: #203449; font: inherit; }
+.client-filters .client-checkbox { display: flex; align-items: center; gap: 9px; font-weight: 400; line-height: 1.5; }
+.client-checkbox input { width: 18px; height: 18px; accent-color: #2b6aa5; }
+.client-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.client-card { min-width: 0; padding: 20px; border: 1px solid #dce5ee; border-radius: 12px; background: #fff; overflow-wrap: anywhere; }
+.client-card h3 { margin: 12px 0 6px; font-size: 20px; }
+.client-card p { margin: 0 0 10px; color: #566b80; font-size: 14px; }
+.client-card .client-section-row { margin-bottom: 8px; }
+.client-card .client-time { color: #245f99; font-size: 14px; font-weight: 700; }
+.client-card .client-spots, .client-spots { color: #216b4e; font-size: 13px; font-weight: 650; }
+.client-spots.full { color: #566b80; }
+.client-card-note { color: #566b80; font-size: 13px; line-height: 1.6; }
+.client-wide-button { width: 100%; margin-top: 10px; min-height: 44px; white-space: normal; }
+.client-text-button { min-height: 40px; padding: 4px 0; border: 0; background: transparent; color: #245f99; font: inherit; font-size: 13px; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+.client-back { margin-bottom: 20px; }
+.client-next, .client-notice { margin: 26px 0; padding: 18px 20px; border-left: 3px solid #278662; border-radius: 0 10px 10px 0; background: #e9f6ef; }
+.client-next p, .client-notice p { margin: 10px 0 0; font-size: 14px; }
+.client-notice { background: #f0f3f6; border-color: #73889b; }
+.client-confirm { max-width: 650px; padding: 24px; border: 1px solid #cadff0; border-radius: 12px; background: #eaf3fb; }
+.client-confirm h2 { margin: 0 0 20px; font-size: 24px; }
+.client-details { margin: 0 0 18px; }
+.client-details > div { display: grid; grid-template-columns: minmax(100px, 1fr) minmax(0, 2fr); gap: 16px; padding: 13px 0; border-top: 1px solid #dce5ee; font-size: 14px; line-height: 1.6; }
+.client-details dt { color: #566b80; }
+.client-details dd { margin: 0; text-align: right; font-weight: 600; overflow-wrap: anywhere; }
+.client-history { margin-top: 30px; }
+.client-past { background: #f7f9fb; }
+.client-cancel { margin-top: 16px; padding-top: 16px; border-top: 1px solid #dce5ee; }
+.client-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.client-profile-head { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
+.client-profile-head h2 { margin: 0 0 5px; font-size: 22px; overflow-wrap: anywhere; }
+.client-profile-head p { margin: 0; color: #566b80; overflow-wrap: anywhere; }
+.client-plan { padding: 22px; border-radius: 12px; background: #eaf3fb; }
+.client-plan h2 { margin: 10px 0; font-size: 22px; }
+.client-plan p { font-size: 14px; }
+.client-plan-price { font-size: 22px !important; font-weight: 700; }
+.client-plan-price span { font-size: 13px; font-weight: 400; }
+.client-plan .client-card-note { margin-top: 14px; margin-bottom: 0; }
+.client-profile-section { margin: 30px 0; }
+.client-profile-form { padding: 20px; border: 1px solid #dce5ee; border-radius: 12px; }
+.client-payments { display: grid; gap: 14px; }
+.client-payment { padding: 16px 20px 0; border: 1px solid #dce5ee; border-radius: 10px; }
+.client-payment h3 { margin: 0 0 12px; font-size: 16px; }
+.client-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 10px 24px; padding-bottom: max(10px, env(safe-area-inset-bottom)); border-block: 1px solid #e2e9f0; background: #fff; }
+.client-nav button { display: grid; justify-items: center; align-content: center; gap: 7px; min-height: 55px; border: 0; border-radius: 8px; background: #fff; color: #566b80; font: inherit; font-size: 14px; font-weight: 600; }
+.client-nav button.active { background: #eaf3fb; color: #245f99; }
+.client-nav-dot { width: 6px; height: 6px; border-radius: 50%; background: transparent; }
+.client-nav button.active .client-nav-dot { background: #2b6aa5; }
+.client-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 32px 22px; color: #566b80; font-size: 12px; }
+.client-shell input:focus-visible, .client-shell select:focus-visible { outline: 3px solid #9ac8ef; outline-offset: 2px; }
+.client-shell button:focus-visible, .client-shell a:focus-visible { outline: 3px solid #2b6aa5; outline-offset: 3px; }
+
+@media (max-width: 700px) {
+  .client-shell { border: 0; }
+  .client-topbar { padding: 20px; }
+  .client-demo { margin-inline: 20px; }
+  .client-main { padding: 25px 20px; }
+  .client-card-grid { grid-template-columns: 1fr; }
+  .client-days { gap: 5px; }
+  .client-day { padding: 10px 2px; font-size: 11px; }
+  .client-day strong { font-size: 16px; }
+  .client-nav { position: sticky; bottom: 0; z-index: 3; padding-inline: 12px; }
+  .client-nav button { font-size: 13px; }
+  .client-footer { padding-inline: 20px; }
+  .client-details > div { grid-template-columns: minmax(70px, 1fr) minmax(0, 2fr); gap: 12px; font-size: 13px; }
+  .client-confirm, .client-card, .client-profile-form { padding: 18px; }
+  .client-profile-form .crud-form-buttons { flex-wrap: wrap; }
+}
+
+@media (max-width: 360px) {
+  .client-topbar, .client-main, .client-footer { padding-inline: 16px; }
+  .client-demo { margin-inline: 16px; padding-inline: 10px; }
+  .client-days { gap: 3px; }
+  .client-section-row { gap: 10px; }
+}

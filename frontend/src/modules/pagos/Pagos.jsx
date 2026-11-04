@@ -1,100 +1,118 @@
 import { useState } from 'react'
+import Encabezado from '../../components/Encabezado.jsx'
+import Mensaje from '../../components/Mensaje.jsx'
+import { fechaTexto, mostrarFecha } from '../../utils/fechas.js'
+import { mostrarPesos, nombreSocio, normalizar, siguienteId } from '../../utils/listas.js'
+import { metodosPago, validarPago } from '../../utils/validaciones.js'
 import '../../styles/Listados.css'
+import '../../styles/Crud.css'
 
-// Pagos de ejemplo. Cada uno tiene socio, monto, fecha y método.
-const pagos = [
-  { id: 1, socio: 'Ana Pérez', monto: 35000, fecha: '20/10/2026', metodo: 'Transferencia' },
-  { id: 2, socio: 'Juan Gómez', monto: 20000, fecha: '19/10/2026', metodo: 'Efectivo' },
-  { id: 3, socio: 'Lucía Fernández', monto: 35000, fecha: '18/10/2026', metodo: 'Tarjeta' },
-  { id: 4, socio: 'Sofía López', monto: 20000, fecha: '17/10/2026', metodo: 'Transferencia' },
-  { id: 5, socio: 'Martín Rodríguez', monto: 28000, fecha: '15/10/2026', metodo: 'Efectivo' },
-]
-
-function mostrarPesos(numero) {
-  return '$' + numero.toLocaleString('es-AR')
-}
-
-function Pagos() {
-  // React guarda lo escrito para volver a dibujar la tabla filtrada.
+function Pagos({ lista, setLista, socios }) {
   const [busqueda, setBusqueda] = useState('')
-  const texto = busqueda.trim().toLowerCase()
+  const [metodo, setMetodo] = useState('')
+  const [formulario, setFormulario] = useState(null)
+  const [error, setError] = useState('')
+  const [mensaje, setMensaje] = useState('')
+  const visibles = lista.filter((pago) =>
+    normalizar(nombreSocio(socios, pago.socioId) + ' ' + pago.metodoPago).includes(normalizar(busqueda)) && (!metodo || pago.metodoPago === metodo)
+  ).sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id)
+  // Las tarjetas resumen los resultados filtrados, no una cifra fija.
+  const total = visibles.reduce((suma, pago) => suma + pago.monto, 0)
 
-  // Filtramos por nombre del socio o método de pago.
-  const visibles = pagos.filter((pago) => {
-    const datos = (pago.socio + ' ' + pago.metodo).toLowerCase()
-    return datos.includes(texto)
-  })
+  function abrir(pago) {
+    setFormulario(pago ? { ...pago } : { id: null, socioId: '', monto: '', fecha: fechaTexto(), metodoPago: 'Efectivo' })
+    setError('')
+    setMensaje('')
+  }
 
-  // Sumamos los montos para mostrar un total del ejemplo.
-  let total = 0
-  for (const pago of pagos) total += pago.monto
-  const transferencias = pagos.filter((pago) => pago.metodo === 'Transferencia').length
+  function cambiar(campo, valor) {
+    setFormulario({ ...formulario, [campo]: valor })
+    setError('')
+  }
+
+  function guardar(evento) {
+    evento.preventDefault()
+    const datos = { ...formulario, monto: Number(formulario.monto) }
+    const fallo = validarPago(datos, socios)
+    if (fallo) return setError(fallo)
+    if (datos.id === null) setLista([...lista, { ...datos, id: siguienteId(lista) }])
+    else setLista(lista.map((pago) => pago.id === datos.id ? datos : pago))
+    setMensaje(datos.id === null ? 'Pago registrado correctamente.' : 'Pago actualizado correctamente.')
+    setFormulario(null)
+    setBusqueda('')
+    setMetodo('')
+  }
+
+  function eliminar(pago) {
+    if (!window.confirm('¿Eliminar el pago de ' + mostrarPesos(pago.monto) + ' de ' + nombreSocio(socios, pago.socioId) + '?')) return
+    setLista(lista.filter((item) => item.id !== pago.id))
+    if (formulario?.id === pago.id) setFormulario(null)
+    setError('')
+    setMensaje('Pago eliminado.')
+  }
 
   return (
     <>
-      <header className="page-header">
-        <div>
-          <p className="eyebrow">Gestión · Vista de ejemplo</p>
-          <h1>Pagos</h1>
-          <p className="subtitle">Registro de pagos realizados por los socios.</p>
-        </div>
-        <div className="user-badge"><span>R</span> Recepción</div>
-      </header>
-
-      <section className="listado-resumen" aria-label="Resumen de pagos">
-        <div className="resumen-card"><span>Pagos registrados</span><strong>{pagos.length}</strong></div>
-        <div className="resumen-card"><span>Monto total</span><strong>{mostrarPesos(total)}</strong></div>
-        <div className="resumen-card"><span>Transferencias</span><strong>{transferencias}</strong></div>
+      <Encabezado titulo="Pagos" descripcion="Registrá y consultá los pagos de las cuotas de los socios." />
+      <section className="listado-resumen" aria-label="Resumen de pagos filtrados">
+        <div className="resumen-card"><span>Pagos encontrados</span><strong>{visibles.length}</strong></div>
+        <div className="resumen-card"><span>Monto de los resultados</span><strong>{mostrarPesos(total)}</strong></div>
+        <div className="resumen-card"><span>Transferencias encontradas</span><strong>{visibles.filter((pago) => pago.metodoPago === 'Transferencia').length}</strong></div>
       </section>
-
+      <Mensaje texto={mensaje} /><Mensaje texto={error} error />
+      {socios.length === 0 && <p className="empty-state">Primero agregá un socio desde Socios para poder registrar un pago.</p>}
+      {formulario && (
+        <section className="crud-form-panel" aria-label="Formulario de pago">
+          <h2>{formulario.id === null ? 'Nuevo pago' : 'Editar pago'}</h2>
+          <p className="form-help">Todos los campos son obligatorios. También podés registrar pagos de socios inactivos.</p>
+          <form onSubmit={guardar}>
+            <div className="crud-form-grid">
+              <label>Socio *
+                <select autoFocus required value={formulario.socioId} onChange={(e) => cambiar('socioId', e.target.value ? Number(e.target.value) : '')}>
+                  <option value="">Elegir socio</option>
+                  {socios.map((socio) => <option key={socio.id} value={socio.id}>{socio.nombre} {socio.apellido} · DNI {socio.dni}</option>)}
+                </select>
+              </label>
+              <label>Monto *<input type="number" min="0.01" step="0.01" required value={formulario.monto} onChange={(e) => cambiar('monto', e.target.value)} /></label>
+              <label>Fecha de pago *<input type="date" required max={fechaTexto()} value={formulario.fecha} onInput={(e) => cambiar('fecha', e.target.value)} /></label>
+              <label>Método de pago *<select value={formulario.metodoPago} onChange={(e) => cambiar('metodoPago', e.target.value)}>{metodosPago.map((nombre) => <option key={nombre}>{nombre}</option>)}</select></label>
+            </div>
+            <div className="crud-form-buttons">
+              <button type="button" className="crud-secondary" onClick={() => { setFormulario(null); setError(''); setMensaje('Edición cancelada. No se guardaron cambios.') }}>Cancelar</button>
+              <button type="submit" className="crud-primary">Guardar pago</button>
+            </div>
+          </form>
+        </section>
+      )}
       <section className="listado-panel" aria-label="Listado de pagos">
         <div className="listado-panel-header">
-          <div>
-            <h2>Listado de pagos</h2>
-            <p>Mostrando {visibles.length} de {pagos.length} pagos</p>
-          </div>
-          <div className="listado-busqueda">
-            <label htmlFor="buscar-pago">Buscar pago</label>
-            <input
-              id="buscar-pago"
-              type="search"
-              placeholder="Socio o método"
-              value={busqueda}
-              onChange={(evento) => setBusqueda(evento.target.value)}
-            />
+          <div><h2>Listado de pagos</h2><p>Mostrando {visibles.length} de {lista.length} pagos</p></div>
+          <div className="crud-toolbar">
+            <div className="listado-busqueda"><label htmlFor="buscar-pago">Buscar pago</label><input id="buscar-pago" type="search" placeholder="Socio o método" value={busqueda} onChange={(e) => setBusqueda(e.target.value)} /></div>
+            <div className="listado-filtro"><label htmlFor="metodo-pago">Método</label><select id="metodo-pago" value={metodo} onChange={(e) => setMetodo(e.target.value)}><option value="">Todos</option>{metodosPago.map((nombre) => <option key={nombre}>{nombre}</option>)}</select></div>
+            <button type="button" className="crud-primary" disabled={socios.length === 0} onClick={() => abrir()}>Nuevo pago</button>
           </div>
         </div>
-
-        <div className="listado-tabla-scroll">
+        <p className="table-hint">En pantallas pequeñas, desplazá la tabla hacia los lados para ver todas las columnas y acciones.</p>
+        <div className="listado-tabla-scroll" role="region" aria-label="Tabla de pagos, desplazamiento horizontal" tabIndex="0">
           <table className="listado-tabla">
-            <thead>
-              <tr>
-                <th scope="col">N.º</th>
-                <th scope="col">Socio</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Método</th>
-                <th scope="col">Monto</th>
-              </tr>
-            </thead>
+            <caption className="sr-only">Historial de pagos de cuotas</caption>
+            <thead><tr>{['N.º', 'Socio', 'Fecha', 'Método', 'Monto', 'Acciones'].map((titulo) => <th key={titulo} scope="col">{titulo}</th>)}</tr></thead>
             <tbody>
-              {/* map crea una fila por cada pago que pasó el filtro. */}
               {visibles.map((pago) => (
                 <tr key={pago.id}>
-                  <td>#{pago.id}</td>
-                  <td><strong>{pago.socio}</strong></td>
-                  <td>{pago.fecha}</td>
-                  <td>{pago.metodo}</td>
-                  <td>{mostrarPesos(pago.monto)}</td>
+                  <td>#{pago.id}</td><td><strong>{nombreSocio(socios, pago.socioId)}</strong></td><td>{mostrarFecha(pago.fecha)}</td><td>{pago.metodoPago}</td><td>{mostrarPesos(pago.monto)}</td>
+                  <td><div className="crud-actions">
+                    <button type="button" className="crud-secondary" aria-label={'Editar pago ' + pago.id} onClick={() => abrir(pago)}>Editar</button>
+                    <button type="button" className="crud-danger" aria-label={'Eliminar pago ' + pago.id} onClick={() => eliminar(pago)}>Eliminar</button>
+                  </div></td>
                 </tr>
               ))}
-              {visibles.length === 0 && (
-                <tr><td className="sin-resultados" colSpan="5">No hay pagos que coincidan con la búsqueda.</td></tr>
-              )}
+              {visibles.length === 0 && <tr><td className="sin-resultados" colSpan="6">{lista.length ? 'No hay pagos que coincidan con los filtros.' : 'Todavía no hay pagos. Registrá el primero con Nuevo pago.'}</td></tr>}
             </tbody>
           </table>
         </div>
       </section>
-      <p className="sample-note">Los pagos y montos son datos de ejemplo.</p>
     </>
   )
 }

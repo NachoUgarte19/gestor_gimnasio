@@ -14,7 +14,7 @@
   background: #fff;
 }
 
-.resumen-card span { color: #728397; font-size: 12px; }
+.resumen-card span { color: #566b80; font-size: 12px; }
 .resumen-card strong { color: #203449; font-size: 27px; font-weight: 650; }
 
 .socios-panel {
@@ -33,7 +33,7 @@
 }
 
 .socios-panel-header h2 { margin: 0 0 5px; font-size: 17px; font-weight: 650; }
-.socios-panel-header p { margin: 0; color: #8192a3; font-size: 12px; }
+.socios-panel-header p { margin: 0; color: #566b80; font-size: 12px; }
 .socios-busqueda { display: grid; gap: 6px; }
 .socios-busqueda label { color: #566b80; font-size: 11px; font-weight: 650; }
 
@@ -59,7 +59,7 @@
   border-top: 1px solid #e7edf3;
   border-bottom: 1px solid #e7edf3;
   background: #f7f9fb;
-  color: #8192a3;
+  color: #566b80;
   font-size: 11px;
   font-weight: 650;
 }
@@ -88,7 +88,7 @@
 }
 
 .contacto-email { display: block; color: #203449; }
-.socios-tabla small { display: block; margin-top: 4px; color: #8192a3; font-size: 11px; }
+.socios-tabla small { display: block; margin-top: 4px; color: #566b80; font-size: 11px; }
 
 .estado-socio {
   display: inline-block;
@@ -99,8 +99,8 @@
 }
 
 .estado-socio.activo { background: #e9f6ef; color: #278662; }
-.estado-socio.inactivo { background: #f0f3f6; color: #728397; }
-.socios-tabla .sin-resultados { padding: 30px; color: #728397; text-align: center; }
+.estado-socio.inactivo { background: #f0f3f6; color: #566b80; }
+.socios-tabla .sin-resultados { padding: 30px; color: #566b80; text-align: center; }
 
 @media (max-width: 700px) {
   .socios-resumen { gap: 8px; }

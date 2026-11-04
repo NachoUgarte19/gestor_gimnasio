@@ -1,44 +1,58 @@
 # Frontend del gimnasio
 
-Pantallas de Agenda, Socios, Clases, Planes y Pagos hechas con React, Vite y CSS. La **Agenda** lee clases y reservas del backend. Las demás pantallas siguen usando datos de ejemplo.
+Vistas de **administración y cliente** hechas con React, Vite y CSS. Funcionan con datos locales, sin iniciar Java, MySQL ni otra API.
+
+Incluye Agenda, Socios, Clases, Planes, Reservas y Pagos. Los cambios se comparten entre pantallas y se guardan en el navegador mediante localStorage.
+
+La vista del cliente implementa el mockup del socio: clases por día, confirmación de reserva, mis reservas, historial y perfil con plan y pagos. Puede editar sus datos de contacto y cancelar sus próximas reservas. Ambas vistas incluyen **Políticas de privacidad**.
+
+El selector superior permite cambiar entre Administrador y Cliente. Para abrir directamente el cliente, agregá **/#cliente** a la dirección de Vite, por ejemplo http://localhost:5173/#cliente. El selector Socio de ejemplo permite recorrer la cuenta de cada persona sin una autenticación real.
 
 ## Ejecutar
 
-Para usar la Agenda, primero iniciá MySQL y el backend desde la carpeta principal:
+Desde la carpeta principal del proyecto:
 
-```bash
-.\mvnw.cmd spring-boot:run
+```powershell
+npm --prefix .\frontend install
+npm --prefix .\frontend run dev
 ```
 
-En otra terminal, desde la carpeta `frontend`:
+Si las dependencias ya están instaladas, alcanza con el segundo comando. Abrí la dirección que indique Vite, normalmente http://localhost:5173.
 
-```bash
-npm install
-npm run dev
+## Verificar
+
+Desde la carpeta principal:
+
+```powershell
+npm --prefix .\frontend test
+npm --prefix .\frontend run build
 ```
 
-Abrir la dirección que muestre Vite (normalmente http://localhost:5173).
+El primer comando prueba las validaciones del gimnasio; el segundo compila la aplicación en frontend/dist.
 
-Vite reenvía las llamadas `/api` a `http://localhost:8080`. La Agenda consulta `GET /api/clases` y `GET /api/reservas` al abrir la página. Si la base está vacía, podés importar `database/gimnasio_db.sql` para cargar ejemplos. Las reservas del script tienen fechas concretas: movete a esa semana para ver su efecto en los cupos. Para leer cambios hechos después de abrir la página, recargala.
+Hay quince pruebas: nueve de las reglas compartidas y seis de las reglas específicas de la vista del cliente.
 
-Si la terminal está en la carpeta principal del proyecto, también se puede usar `npm --prefix .\frontend run dev`.
+## Datos de demostración
 
-## Mockups de la vista del socio
+- La primera vez se crean ejemplos de las cinco entidades.
+- Las reservas de ejemplo incluyen turnos de la semana actual y uno anterior para mostrar el historial.
+- Los cambios sobreviven a una recarga en ese navegador y dirección.
+- **Restaurar ejemplos** pide confirmación y vuelve al conjunto inicial de la semana actual.
+- localhost y 127.0.0.1 tienen almacenamientos distintos. Para ver los mismos cambios, usá siempre la misma dirección.
+- Si el navegador bloquea el guardado, aparece una advertencia y la aplicación sigue funcionando en memoria.
 
-Abrir `../docs/mockups/06-vista-socio.html` con doble clic en el navegador. El archivo muestra cuatro pantallas móviles: clases disponibles, confirmación de reserva, mis reservas y perfil. Está junto a los cinco mockups de recepción en `docs/mockups` y también se incluye en `docs/mockups-gimnasio.zip`. No requiere instalar dependencias ni iniciar el backend.
+El guardado es una comodidad de la demo; no reemplaza una base de datos ni comparte información entre dispositivos.
 
-## Cómo leer el código
+## Explicación completa
 
-1. `src/main.jsx` coloca `App` en la página.
-2. `src/App.jsx` dibuja el menú y elige qué módulo se muestra. `src/App.css` tiene los estilos del menú y del encabezado.
-3. Cada carpeta dentro de `src/modules` contiene una pantalla:
-   - `agenda/Agenda.jsx` y `agenda/Agenda.css`: calendario semanal.
-   - `socios/Socios.jsx` y `socios/Socios.css`: listado de socios.
-   - `clases/Clases.jsx`: listado de clases.
-   - `planes/Planes.jsx`: listado de planes.
-   - `pagos/Pagos.jsx`: listado de pagos.
-4. `src/styles/base.css` contiene los estilos generales. `src/styles/Listados.css` se comparte entre Clases, Planes y Pagos. `src/styles/Crud.css` da estilo a los formularios y botones de Socios, Clases y Planes.
+Leé [GUIA_FRONTEND.md](GUIA_FRONTEND.md): explica la estructura, cada pantalla, el flujo de datos, las funciones de React, las validaciones, los estilos, la relación con la rúbrica y un recorrido sugerido para la entrega.
 
-En Socios, Clases y Planes, **Nuevo** abre un formulario vacío, **Editar** lo abre con los datos de esa fila y **Eliminar** pide confirmación. Al guardar, el arreglo `lista` del módulo se actualiza con `setLista`. El buscador y los números del resumen también usan ese arreglo.
+La [guía de la vista del cliente](GUIA_CLIENTE.md) explica los nuevos archivos, las reglas de reserva, la edición del perfil y cómo demostrar el recorrido completo.
 
-En Socios, Clases y Planes, estos cambios son solo locales: no se llama a la API y se pierden al recargar la página. Al cambiar entre secciones se conservan mientras la página siga abierta. El listado de Clases todavía usa ejemplos independientes de los datos reales de la Agenda. Pagos sigue siendo un listado de ejemplo.
+## Alcance actual
+
+Ambas vistas están implementadas para la demostración. No hay autenticación ni permisos reales. La integración con el backend queda para una siguiente etapa.
+
+El archivo ../docs/mockups/06-vista-socio.html sigue siendo una referencia visual del lado del socio, no una pantalla integrada a esta aplicación.
+
+vite.config.js conserva el proxy /api para una futura integración, pero las pantallas actuales no hacen peticiones al servidor.

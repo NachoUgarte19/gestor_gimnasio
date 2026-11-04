@@ -1,4 +1,4 @@
-/* Estilos compartidos por las pantallas de Clases, Planes y Pagos. */
+/* Estilos compartidos por Clases, Planes, Reservas y Pagos. */
 .listado-resumen {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -15,7 +15,7 @@
   background: #fff;
 }
 
-.listado-resumen .resumen-card span { color: #728397; font-size: 12px; }
+.listado-resumen .resumen-card span { color: #566b80; font-size: 12px; }
 .listado-resumen .resumen-card strong { color: #203449; font-size: 27px; font-weight: 650; }
 
 .listado-panel {
@@ -34,7 +34,7 @@
 }
 
 .listado-panel-header h2 { margin: 0 0 5px; font-size: 17px; font-weight: 650; }
-.listado-panel-header p { margin: 0; color: #8192a3; font-size: 12px; }
+.listado-panel-header p { margin: 0; color: #566b80; font-size: 12px; }
 .listado-busqueda { display: grid; gap: 6px; }
 .listado-busqueda label { color: #566b80; font-size: 11px; font-weight: 650; }
 
@@ -60,7 +60,7 @@
   border-top: 1px solid #e7edf3;
   border-bottom: 1px solid #e7edf3;
   background: #f7f9fb;
-  color: #8192a3;
+  color: #566b80;
   font-size: 11px;
   font-weight: 650;
 }
@@ -74,7 +74,23 @@
 
 .listado-tabla tbody tr:last-child td { border-bottom: 0; }
 .listado-tabla td strong { color: #203449; font-weight: 650; }
-.listado-tabla .sin-resultados { padding: 30px; color: #728397; text-align: center; }
+.listado-tabla .sin-resultados { padding: 30px; color: #566b80; text-align: center; }
+
+.listado-filtro { display: grid; gap: 6px; }
+.listado-filtro label { color: #566b80; font-size: 11px; font-weight: 650; }
+.listado-filtro input, .listado-filtro select { min-height: 36px; max-width: 100%; border: 1px solid #dce5ee; border-radius: 8px; padding: 6px 10px; background: #fff; color: #203449; font: inherit; font-size: 12px; }
+.texto-largo { min-width: 200px; max-width: 350px; overflow-wrap: anywhere; line-height: 1.5; }
+/* Si no hay filas, el mensaje debe verse sin desplazar una tabla vacía. */
+.listado-tabla:has(.sin-resultados), .socios-tabla:has(.sin-resultados) { min-width: 0; }
+.listado-tabla:has(.sin-resultados) thead, .socios-tabla:has(.sin-resultados) thead { display: none; }
+.table-hint { display: none; margin: 0; padding: 0 24px 14px; color: #566b80; font-size: 12px; line-height: 1.5; }
+.listado-tabla-scroll:focus-visible, .socios-tabla-scroll:focus-visible, .calendar-scroll:focus-visible { outline: 3px solid #2b6aa5; outline-offset: -3px; }
+
+@media (max-width: 1250px) {
+  .listado-panel-header, .socios-panel-header { align-items: stretch; flex-direction: column; }
+  .crud-toolbar { justify-content: flex-start; }
+  .table-hint { display: block; }
+}
 
 @media (max-width: 700px) {
   .listado-resumen { gap: 8px; }
@@ -82,4 +98,10 @@
   .listado-resumen .resumen-card strong { font-size: 18px; overflow-wrap: anywhere; }
   .listado-panel-header { align-items: stretch; flex-direction: column; padding: 18px; }
   .listado-busqueda input { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .listado-resumen, .socios-resumen { grid-template-columns: 1fr; }
+  .listado-resumen .resumen-card, .socios-resumen .resumen-card { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px; }
+  .listado-resumen .resumen-card strong, .socios-resumen .resumen-card strong { font-size: 20px; }
 }

@@ -1,5 +1,14 @@
 #root { min-height: 100vh; }
 
+/* Este selector permite presentar ambas vistas sin un inicio de sesión real. */
+.view-switch { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; max-width: 1600px; margin: 0 auto; padding: 14px 24px; border-bottom: 1px solid #dce5ee; background: #fff; }
+.view-switch p { display: grid; gap: 4px; margin: 0; font-size: 14px; }
+.view-switch p span { color: #566b80; font-size: 12px; }
+.view-switch nav { display: flex; gap: 6px; }
+.view-switch a { display: flex; align-items: center; min-height: 42px; padding: 10px 14px; border: 1px solid #dce5ee; border-radius: 8px; color: #566b80; font-size: 13px; text-decoration: none; }
+.view-switch a[aria-current="page"] { border-color: #2b6aa5; background: #eaf3fb; color: #245f99; font-weight: 650; }
+.view-switch a:focus-visible { outline: 3px solid #2b6aa5; outline-offset: 3px; }
+
 .app-shell {
   display: flex;
   min-height: 100vh;
@@ -39,7 +48,7 @@
 
 .nav-label, .eyebrow {
   margin: 0;
-  color: #8192a3;
+  color: #566b80;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.1px;
@@ -55,7 +64,7 @@
   border: 0;
   border-radius: 9px;
   background: transparent;
-  color: #728397;
+  color: #566b80;
   font-size: 13px;
   text-align: left;
 }
@@ -76,7 +85,7 @@
   font-size: 12px;
 }
 
-.sidebar-bottom span { color: #8192a3; }
+.sidebar-bottom span { color: #566b80; }
 .main-content { flex: 1; min-width: 0; padding: 34px 32px 44px; }
 
 .page-header {
@@ -89,7 +98,7 @@
 
 h1, p { margin-top: 0; }
 h1 { margin: 8px 0 6px; font-size: 29px; font-weight: 650; letter-spacing: -0.7px; }
-.subtitle { margin: 0; color: #728397; font-size: 14px; }
+.subtitle { margin: 0; color: #566b80; font-size: 14px; }
 
 .user-badge {
   display: flex;
@@ -113,16 +122,29 @@ h1 { margin: 8px 0 6px; font-size: 29px; font-weight: 650; letter-spacing: -0.7p
   color: #278662;
 }
 
-.sample-note { margin: 12px 0 0; color: #8192a3; font-size: 12px; }
+.sample-note { margin: 12px 0 0; color: #566b80; font-size: 12px; }
 button:focus-visible { outline: 3px solid #9ac8ef; outline-offset: 2px; }
 
+.demo-banner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; padding: 14px 16px; background: #eaf3fb; border: 1px solid #cadff0; border-radius: 10px; }
+.demo-banner p { margin: 0; font-size: 13px; line-height: 1.6; }
+.demo-banner span { display: block; color: #566b80; }
+.skip-link { position: absolute; left: 12px; top: -80px; z-index: 10; padding: 12px; border-radius: 6px; background: #203449; color: #fff; }
+.skip-link:focus { top: 12px; }
+.main-content:focus { outline: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.section-title { margin: 0 0 10px; font-size: 17px; }
+.app-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 30px; padding-top: 18px; border-top: 1px solid #dce5ee; color: #566b80; font-size: 13px; }
+.privacy-link { min-height: 40px; padding: 8px 0; border: 0; background: transparent; color: #245f99; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.privacy-link:hover { color: #203449; }
+
 @media (max-width: 700px) {
+  .view-switch { padding: 14px 18px; }
   .app-shell { flex-direction: column; }
   .sidebar { flex-basis: auto; padding: 14px 18px; border-right: 0; border-bottom: 1px solid #e2e9f0; }
   .brand { padding: 0 0 12px; }
   .nav-label, .sidebar-bottom { display: none; }
-  .sidebar nav { display: flex; }
-  .nav-item { width: auto; padding: 8px 12px; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .nav-item { width: 100%; min-height: 42px; padding: 8px 10px; text-align: center; }
   .main-content { padding: 22px 16px 32px; }
   .page-header { margin-bottom: 23px; }
   .user-badge { display: none; }

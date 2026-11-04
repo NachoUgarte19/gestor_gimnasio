@@ -2,7 +2,7 @@
 
 Back-end en Java + Spring Boot + JPA + MySQL.
 
-Las pantallas del frontend React están en [frontend](frontend/README.md): Agenda, Socios, Clases, Planes y Pagos. La Agenda consulta clases y reservas reales. Socios, Clases y Planes permiten probar altas, cambios y bajas locales con datos de ejemplo.
+El [frontend React](frontend/README.md) incluye el panel de administración y la vista del cliente basada en el mockup del socio. Permite administrar el gimnasio, reservar y cancelar clases, consultar el historial y editar el perfil. Ambas vistas comparten datos locales guardados en el navegador y no requieren iniciar el backend. La [guía del frontend](frontend/GUIA_FRONTEND.md) explica el código y la relación con la rúbrica; la [guía del cliente](frontend/GUIA_CLIENTE.md) detalla el nuevo recorrido.
 
 ## Cómo ejecutar
 1. Iniciar MySQL desde XAMPP (`localhost:3306`; las credenciales están en `application.properties`).
