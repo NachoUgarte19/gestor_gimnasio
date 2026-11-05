@@ -51,6 +51,7 @@
 }
 
 .socios-busqueda input:focus { border-color: #2b6aa5; box-shadow: 0 0 0 3px #d9ebfb; }
+/* Permite recorrer las columnas de socios cuando no entran en una pantalla angosta. */
 .socios-tabla-scroll { overflow-x: auto; }
 .socios-tabla { width: 100%; min-width: 1000px; border-collapse: collapse; text-align: left; }
 
@@ -102,6 +103,7 @@
 .estado-socio.inactivo { background: #f0f3f6; color: #566b80; }
 .socios-tabla .sin-resultados { padding: 30px; color: #566b80; text-align: center; }
 
+/* Estas reglas adaptan la distribucion al ancho de pantalla, sin cambiar los datos. */
 @media (max-width: 700px) {
   .socios-resumen { gap: 8px; }
   .resumen-card { padding: 14px 12px; }

@@ -2,6 +2,7 @@ import './Privacidad.css'
 
 // Esta pantalla se comparte entre el administrador y el cliente.
 // El texto del botón permite volver a la sección correspondiente de cada vista.
+// onVolver es una funcion recibida por props. El valor por defecto permite usar el aviso desde el administrador.
 function Privacidad({ onVolver, textoVolver = 'Volver a Agenda' }) {
   return (
     <>

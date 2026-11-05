@@ -3,6 +3,7 @@ import { diasSemana, fechaTexto, inicioSemana, leerFecha, sumarDias } from '../.
 import { normalizar } from '../../../utils/listas.js'
 import { claseComenzada, fechaLarga, lugaresDisponibles, reservasDelSocio } from '../clienteUtils.js'
 
+// Los estados manejan dia y filtros; clases y reservas llegan por props desde la lista compartida.
 function ClasesCliente({ socio, planes, clases, reservas, onReservar, onVerReservas, onVerPerfil }) {
   const [fecha, setFecha] = useState(fechaTexto())
   const [busqueda, setBusqueda] = useState('')
@@ -12,12 +13,15 @@ function ClasesCliente({ socio, planes, clases, reservas, onReservar, onVerReser
   const diaElegido = diasSemana[(leerFecha(fecha).getDay() + 6) % 7]
   const plan = planes.find((item) => item.id === socio.planId)
   const ahora = new Date()
+  // Elige la primera reserva futura de esta cuenta, ya ordenada por fecha y hora.
   const proxima = reservasDelSocio(reservas, clases, socio.id).find((reserva) => reserva.clase && !claseComenzada(reserva.clase, reserva.fecha, ahora))
+  // Este resultado se recalcula al cambiar datos o filtros; no modifica la lista original.
   const visibles = clases.filter((clase) => {
     const coincide = clase.dia === diaElegido && normalizar(clase.nombre + ' ' + clase.instructor).includes(normalizar(busqueda))
     return coincide && (!soloDisponibles || (lugaresDisponibles(clase, fecha, reservas) > 0 && !claseComenzada(clase, fecha, ahora)))
   }).sort((a, b) => a.horario.localeCompare(b.horario))
 
+  // Desplaza siete dias por semana y conserva el dia de la semana que estaba elegido.
   function cambiarSemana(cantidad) {
     setFecha(fechaTexto(sumarDias(leerFecha(fecha), cantidad * 7)))
   }

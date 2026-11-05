@@ -52,6 +52,7 @@
 }
 
 .listado-busqueda input:focus { border-color: #2b6aa5; box-shadow: 0 0 0 3px #d9ebfb; }
+/* El desborde queda dentro del contenedor: la tabla se desplaza sin ensanchar la pagina. */
 .listado-tabla-scroll { overflow-x: auto; }
 .listado-tabla { width: 100%; min-width: 850px; border-collapse: collapse; text-align: left; }
 
@@ -86,6 +87,7 @@
 .table-hint { display: none; margin: 0; padding: 0 24px 14px; color: #566b80; font-size: 12px; line-height: 1.5; }
 .listado-tabla-scroll:focus-visible, .socios-tabla-scroll:focus-visible, .calendar-scroll:focus-visible { outline: 3px solid #2b6aa5; outline-offset: -3px; }
 
+/* Estas reglas adaptan la distribucion al ancho de pantalla, sin cambiar los datos. */
 @media (max-width: 1250px) {
   .listado-panel-header, .socios-panel-header { align-items: stretch; flex-direction: column; }
   .crud-toolbar { justify-content: flex-start; }

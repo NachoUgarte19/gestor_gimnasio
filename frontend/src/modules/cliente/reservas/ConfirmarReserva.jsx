@@ -1,5 +1,6 @@
 import { claseComenzada, fechaLarga, lugaresDisponibles } from '../clienteUtils.js'
 
+// Muestra un resumen del turno. El guardado real de la demo lo realiza la funcion onConfirmar del padre.
 function ConfirmarReserva({ seleccion, socio, clases, planes, reservas, onConfirmar, onVolver }) {
   // Consultamos la clase actual, no una copia de cuando se tocó Reservar.
   const clase = clases.find((item) => item.id === seleccion.claseId)

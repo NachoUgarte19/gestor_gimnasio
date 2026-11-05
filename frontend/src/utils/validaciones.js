@@ -2,6 +2,7 @@ import { diaDeFecha, fechaTexto, diasSemana } from './fechas.js'
 
 // Devuelven un mensaje de error o '' si los datos son válidos.
 // También rechazamos textos con espacios: required por sí solo no los rechaza.
+// Comprueba identidad, contacto, plan y fechas. Al editar se excluye el propio id de la busqueda de duplicados.
 export function validarSocio(socio, socios, planes) {
   if (!socio.nombre || !socio.apellido) return 'Completá el nombre y el apellido.'
   if (!/^\d{6,20}$/.test(socio.dni)) return 'Ingresá un DNI de 6 a 20 dígitos, sin puntos.'
@@ -15,6 +16,7 @@ export function validarSocio(socio, socios, planes) {
   return ''
 }
 
+// Controla el nombre, un precio finito y positivo y la longitud de los beneficios.
 export function validarPlan(plan) {
   if (!plan.nombre) return 'Completá el nombre del plan.'
   if (!Number.isFinite(plan.precio) || plan.precio <= 0) return 'El precio debe ser mayor a cero.'
@@ -22,6 +24,7 @@ export function validarPlan(plan) {
   return ''
 }
 
+// Valida el turno semanal y protege las reservas existentes al cambiar dia o cupo.
 export function validarClase(clase, clases, reservas) {
   if (!clase.nombre || !clase.instructor) return 'Completá el nombre de la clase y el instructor.'
   if (!diasSemana.includes(clase.dia) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(clase.horario)) return 'Elegí un día y un horario válidos.'
@@ -36,6 +39,7 @@ export function validarClase(clase, clases, reservas) {
   return ''
 }
 
+// Revisa relaciones, estado activo, dia de asistencia, duplicados y cupo del turno concreto.
 export function validarReserva(reserva, socios, clases, reservas) {
   const socio = socios.find((item) => item.id === reserva.socioId)
   const clase = clases.find((item) => item.id === reserva.claseId)
@@ -50,6 +54,7 @@ export function validarReserva(reserva, socios, clases, reservas) {
 
 export const metodosPago = ['Efectivo', 'Transferencia', 'Tarjeta']
 
+// Verifica que exista el socio y que monto, fecha y metodo de pago sean validos.
 export function validarPago(pago, socios) {
   if (!socios.some((socio) => socio.id === pago.socioId)) return 'Elegí un socio disponible.'
   if (!Number.isFinite(pago.monto) || pago.monto <= 0) return 'El monto debe ser mayor a cero.'

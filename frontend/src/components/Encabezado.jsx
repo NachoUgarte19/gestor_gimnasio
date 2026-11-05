@@ -1,3 +1,4 @@
+// Las props titulo y descripcion permiten reutilizar el mismo encabezado en distintos modulos.
 export default function Encabezado({ titulo, descripcion }) {
   return (
     <header className="page-header">

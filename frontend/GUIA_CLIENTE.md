@@ -117,7 +117,7 @@ No se pide aceptar un texto para entrar a la demostración: se navega con cuenta
 
 Cliente.css utiliza clases que empiezan con client- para no cambiar las tablas ni los formularios del administrador. Conserva el azul, el verde, las tarjetas y la jerarquía del mockup.
 
-En computadora las tarjetas pueden ocupar dos columnas. En celular pasan a una y el menú Clases / Mis reservas / Perfil permanece accesible en la parte inferior mientras se recorre la página.
+En computadora, el menú Clases / Mis reservas / Perfil está a la izquierda, con una barra similar a la del administrador y el contenido a la derecha. En celular, las tarjetas pasan a una columna y el menú permanece en la parte inferior mientras se recorre la página. Se utiliza un único menú: CSS cambia su ubicación según el tamaño de pantalla, sin duplicar botones ni lógica.
 
 Se usan etiquetas de campos, encabezados, secciones con nombres accesibles, botones con foco visible, estados con texto y cantidades y mensajes anunciados. El selector de día informa qué opción está elegida. El enlace Saltar al contenido permite pasar directamente a la pantalla activa sin cambiar de vista.
 

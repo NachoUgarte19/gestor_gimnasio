@@ -1,3 +1,4 @@
+/* Limita el ancho de lectura y deja espacio entre secciones del aviso compartido. */
 .privacy-content {
   max-width: 850px;
   padding: 28px;
@@ -15,6 +16,7 @@
 .privacy-content a { color: #245f99; text-underline-offset: 3px; }
 .privacy-notice { padding: 14px; border-radius: 8px; background: #eaf3fb; }
 
+/* Estas reglas adaptan la distribucion al ancho de pantalla, sin cambiar los datos. */
 @media (max-width: 700px) {
   .privacy-content { padding: 18px; }
 }

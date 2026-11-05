@@ -1,3 +1,4 @@
+// Pruebas de funciones de JavaScript con el ejecutor de Node; no requieren un navegador.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { crearDatosIniciales } from '../src/data/datosIniciales.js'

@@ -7,29 +7,35 @@ import { metodosPago, validarPago } from '../../utils/validaciones.js'
 import '../../styles/Listados.css'
 import '../../styles/Crud.css'
 
+// La lista llega por props desde App; los estados locales controlan filtros, borrador y mensajes.
 function Pagos({ lista, setLista, socios }) {
   const [busqueda, setBusqueda] = useState('')
   const [metodo, setMetodo] = useState('')
+  // null significa formulario cerrado; un objeto representa el borrador abierto.
   const [formulario, setFormulario] = useState(null)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
+  // Este resultado se recalcula al cambiar datos o filtros; no modifica la lista original.
   const visibles = lista.filter((pago) =>
     normalizar(nombreSocio(socios, pago.socioId) + ' ' + pago.metodoPago).includes(normalizar(busqueda)) && (!metodo || pago.metodoPago === metodo)
   ).sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id)
   // Las tarjetas resumen los resultados filtrados, no una cifra fija.
   const total = visibles.reduce((suma, pago) => suma + pago.monto, 0)
 
+  // Con un registro copia el pago para editar; sin argumento prepara un alta con valores iniciales.
   function abrir(pago) {
     setFormulario(pago ? { ...pago } : { id: null, socioId: '', monto: '', fecha: fechaTexto(), metodoPago: 'Efectivo' })
     setError('')
     setMensaje('')
   }
 
+  // Actualiza un solo campo del borrador y retira el error anterior para permitir corregirlo.
   function cambiar(campo, valor) {
     setFormulario({ ...formulario, [campo]: valor })
     setError('')
   }
 
+  // Prepara y valida el pago. setLista comunica la nueva lista al padre y actualiza las otras pantallas.
   function guardar(evento) {
     evento.preventDefault()
     const datos = { ...formulario, monto: Number(formulario.monto) }
@@ -43,6 +49,7 @@ function Pagos({ lista, setLista, socios }) {
     setMetodo('')
   }
 
+  // Revisa las condiciones y pide confirmacion antes de quitar el registro de la lista compartida.
   function eliminar(pago) {
     if (!window.confirm('¿Eliminar el pago de ' + mostrarPesos(pago.monto) + ' de ' + nombreSocio(socios, pago.socioId) + '?')) return
     setLista(lista.filter((item) => item.id !== pago.id))

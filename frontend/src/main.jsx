@@ -1,3 +1,4 @@
+// Entrada de React: importa el estilo base y monta el componente principal en el HTML.
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/base.css'

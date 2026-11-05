@@ -10,16 +10,19 @@ import Mensaje from '../../components/Mensaje.jsx'
 
 const secciones = ['Agenda', 'Socios', 'Clases', 'Planes', 'Reservas', 'Pagos']
 
+// Recibe los datos de App. Sus estados propios controlan la pantalla y los mensajes del panel.
 function Administrador({ datos, actualizarLista, restaurarDatos, errorGuardado }) {
   const [pantalla, setPantalla] = useState('Agenda')
   const [version, setVersion] = useState(0)
   const [mensaje, setMensaje] = useState('')
   const contenido = useRef(null)
 
+  // Este efecto cambia el titulo de la pestania cuando cambia pantalla.
   useEffect(() => {
     document.title = pantalla + ' | Gestor Gym'
   }, [pantalla])
 
+  // Cambia la seccion visible y lleva el foco al contenido para facilitar el uso del teclado.
   function navegar(seccion) {
     setPantalla(seccion)
     // Al navegar con teclado, el foco pasa al contenido elegido.
@@ -27,6 +30,7 @@ function Administrador({ datos, actualizarLista, restaurarDatos, errorGuardado }
     contenido.current.scrollIntoView({ block: 'start' })
   }
 
+  // Pide confirmacion, reemplaza los datos por ejemplos y cambia la key para reiniciar los formularios.
   function restaurar() {
     if (!window.confirm('¿Restaurar los datos de ejemplo? Se reemplazarán los cambios guardados en este navegador.')) return
     restaurarDatos()

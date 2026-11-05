@@ -35,6 +35,7 @@
   background: #fff;
 }
 
+/* La primera columna contiene horas; las siete restantes representan los dias de la semana. */
 .calendar-grid {
   display: grid;
   min-width: 875px;
@@ -92,6 +93,7 @@
 .class-card.full small { color: #566b80; }
 .agenda-mobile { display: none; }
 
+/* Estas reglas adaptan la distribucion al ancho de pantalla, sin cambiar los datos. */
 @media (max-width: 1100px) {
   .toolbar { align-items: flex-start; flex-direction: column; }
 }

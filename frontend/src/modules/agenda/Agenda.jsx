@@ -6,13 +6,17 @@ import './Agenda.css'
 const formatoDia = new Intl.DateTimeFormat('es-AR', { weekday: 'short' })
 const formatoFecha = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })
 
+// Recibe clases y reservas compartidas. La disponibilidad se calcula al dibujar, sin guardar otra lista.
 function Agenda({ clases, reservas }) {
   const [lunes, setLunes] = useState(() => inicioSemana(new Date()))
+  // Crea los siete dias a partir del lunes elegido para mostrar la semana completa.
   const dias = Array.from({ length: 7 }, (_, indice) => sumarDias(lunes, indice))
+  // Set elimina horarios repetidos y sort los ordena para construir las filas del calendario.
   const horarios = [...new Set(clases.map((clase) => clase.horario))].sort()
   const reservasSemana = reservas.filter((reserva) => reserva.fecha >= fechaTexto(dias[0]) && reserva.fecha <= fechaTexto(dias[6]))
 
   // Esta función usa las mismas listas que Reservas. El cupo cambia al instante.
+  // Cuenta inscripciones del turno y devuelve su tarjeta. compacta adapta el nivel del titulo en celular.
   function tarjeta(clase, fecha, compacta = false) {
     const ocupados = reservas.filter((reserva) => reserva.claseId === clase.id && reserva.fecha === fecha).length
     const libres = Math.max(0, clase.cupo - ocupados)

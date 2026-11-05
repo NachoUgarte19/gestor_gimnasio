@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { claseComenzada, fechaLarga, reservasDelSocio } from '../clienteUtils.js'
 
+// Separa las reservas propias en futuras e historicas. Sus estados solo controlan paneles y confirmaciones.
 function MisReservas({ socio, clases, reservas, onCancelar, onVerClases, onMensaje }) {
   const [verHistorial, setVerHistorial] = useState(false)
   const [cancelacion, setCancelacion] = useState(null)
+  // Primero se filtra por socioId; despues se separan los turnos segun si ya comenzaron.
   const propias = reservasDelSocio(reservas, clases, socio.id)
   const ahora = new Date()
   const proximas = propias.filter((reserva) => reserva.clase && !claseComenzada(reserva.clase, reserva.fecha, ahora))
   const anteriores = propias.filter((reserva) => !reserva.clase || claseComenzada(reserva.clase, reserva.fecha, ahora)).reverse()
 
+  // onCancelar devuelve si pudo quitarse la reserva; solo entonces cerramos la confirmacion de esa tarjeta.
   function cancelar(reserva) {
     // El padre vuelve a comprobar que sea del socio y que el turno no haya empezado.
     if (onCancelar(reserva.id)) setCancelacion(null)

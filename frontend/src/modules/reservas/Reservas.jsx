@@ -7,35 +7,42 @@ import { validarReserva } from '../../utils/validaciones.js'
 import '../../styles/Listados.css'
 import '../../styles/Crud.css'
 
+// La lista llega por props desde App; los estados locales controlan filtros, borrador y mensajes.
 function Reservas({ lista, setLista, socios, clases }) {
   const [busqueda, setBusqueda] = useState('')
   const [fecha, setFecha] = useState('')
+  // null significa formulario cerrado; un objeto representa el borrador abierto.
   const [formulario, setFormulario] = useState(null)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
   const activos = socios.filter((socio) => socio.activo)
+  // Este resultado se recalcula al cambiar datos o filtros; no modifica la lista original.
   const visibles = lista.filter((reserva) => {
     const clase = clases.find((item) => item.id === reserva.claseId)
     const texto = nombreSocio(socios, reserva.socioId) + ' ' + (clase?.nombre || '') + ' ' + (clase?.instructor || '')
     return normalizar(texto).includes(normalizar(busqueda)) && (!fecha || reserva.fecha === fecha)
   }).sort((a, b) => a.fecha.localeCompare(b.fecha) || a.id - b.id)
 
+  // Busca la clase del borrador para anticipar el dia correcto y los lugares libres antes de guardar.
   const claseElegida = clases.find((clase) => clase.id === formulario?.claseId)
   const ocupados = formulario ? lista.filter((reserva) => reserva.id !== formulario.id && reserva.claseId === formulario.claseId && reserva.fecha === formulario.fecha).length : 0
   const lugares = claseElegida ? Math.max(0, claseElegida.cupo - ocupados) : 0
   const fechaCorrecta = formulario?.fecha && claseElegida && diaDeFecha(formulario.fecha) === claseElegida.dia
 
+  // Con un registro copia el reserva para editar; sin argumento prepara un alta con valores iniciales.
   function abrir(reserva) {
     setFormulario(reserva ? { ...reserva } : { id: null, socioId: '', claseId: '', fecha: fechaTexto() })
     setError('')
     setMensaje('')
   }
 
+  // Actualiza un solo campo del borrador y retira el error anterior para permitir corregirlo.
   function cambiar(campo, valor) {
     setFormulario({ ...formulario, [campo]: valor })
     setError('')
   }
 
+  // Prepara y valida el reserva. setLista comunica la nueva lista al padre y actualiza las otras pantallas.
   function guardar(evento) {
     evento.preventDefault()
     const fallo = validarReserva(formulario, socios, clases, lista)
@@ -48,6 +55,7 @@ function Reservas({ lista, setLista, socios, clases }) {
     setFecha('')
   }
 
+  // Revisa las condiciones y pide confirmacion antes de quitar el registro de la lista compartida.
   function cancelar(reserva) {
     if (!window.confirm('¿Cancelar la reserva de ' + nombreSocio(socios, reserva.socioId) + ' del ' + mostrarFecha(reserva.fecha) + '?')) return
     setLista(lista.filter((item) => item.id !== reserva.id))

@@ -2,15 +2,18 @@ import { fechaTexto, inicioSemana, sumarDias } from '../utils/fechas.js'
 
 // Se crea una copia nueva al restaurar ejemplos.
 // Incluimos la semana actual y un turno anterior para demostrar cupos e historial.
+// Devuelve objetos y arreglos nuevos para que restaurar no reutilice registros modificados.
 export function crearDatosIniciales() {
   const lunes = inicioSemana(new Date())
   const hoy = fechaTexto()
   return {
+    // Catalogo comercial: los socios referencian cada plan mediante planId.
     planes: [
       { id: 1, nombre: 'Plan Básico', precio: 20000, beneficios: 'Acceso al gimnasio y clases grupales' },
       { id: 2, nombre: 'Plan Plus', precio: 28000, beneficios: 'Clases grupales y seguimiento mensual' },
       { id: 3, nombre: 'Plan Full', precio: 35000, beneficios: 'Clases grupales y asesoramiento personalizado' },
     ],
+    // Personas de ejemplo. activo controla la posibilidad de realizar nuevas reservas.
     socios: [
       { id: 1, nombre: 'Ana', apellido: 'Pérez', dni: '40123456', email: 'ana.perez@ejemplo.com', telefono: '11 4567-8901', fechaNacimiento: '1997-04-12', fechaIngreso: hoy, planId: 3, activo: true },
       { id: 2, nombre: 'Juan', apellido: 'Gómez', dni: '38987654', email: 'juan.gomez@ejemplo.com', telefono: '11 4321-7654', fechaNacimiento: '1995-08-20', fechaIngreso: hoy, planId: 1, activo: true },
@@ -19,6 +22,7 @@ export function crearDatosIniciales() {
       { id: 5, nombre: 'Sofía', apellido: 'López', dni: '44777123', email: 'sofia.lopez@ejemplo.com', telefono: '', fechaNacimiento: '', fechaIngreso: hoy, planId: 1, activo: true },
       { id: 6, nombre: 'Diego', apellido: 'Martínez', dni: '35999123', email: 'diego.martinez@ejemplo.com', telefono: '', fechaNacimiento: '', fechaIngreso: hoy, planId: 2, activo: false },
     ],
+    // Turnos semanales: el dia y el horario se repiten; el cupo se aplica por fecha.
     clases: [
       { id: 1, nombre: 'Funcional', instructor: 'Lucía Gómez', dia: 'Lunes', horario: '08:00', cupo: 12 },
       { id: 2, nombre: 'Yoga', instructor: 'Martina Díaz', dia: 'Martes', horario: '09:00', cupo: 4 },
@@ -27,6 +31,7 @@ export function crearDatosIniciales() {
       { id: 5, nombre: 'Funcional', instructor: 'Lucía Gómez', dia: 'Viernes', horario: '08:00', cupo: 12 },
       { id: 6, nombre: 'Yoga', instructor: 'Martina Díaz', dia: 'Sábado', horario: '10:00', cupo: 10 },
     ],
+    // Cada registro une socioId y claseId con una fecha concreta de asistencia.
     reservas: [
       { id: 1, socioId: 1, claseId: 1, fecha: fechaTexto(lunes) },
       { id: 2, socioId: 2, claseId: 2, fecha: fechaTexto(sumarDias(lunes, 1)) },
@@ -36,6 +41,7 @@ export function crearDatosIniciales() {
       { id: 6, socioId: 1, claseId: 6, fecha: fechaTexto(sumarDias(lunes, -2)) },
       { id: 7, socioId: 1, claseId: 6, fecha: fechaTexto(sumarDias(lunes, 5)) },
     ],
+    // Registros de cuotas simuladas. No representan una pasarela de cobro.
     pagos: [
       { id: 1, socioId: 1, monto: 35000, fecha: hoy, metodoPago: 'Transferencia' },
       { id: 2, socioId: 2, monto: 20000, fecha: hoy, metodoPago: 'Efectivo' },

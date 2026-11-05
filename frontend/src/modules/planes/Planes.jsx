@@ -6,25 +6,31 @@ import { validarPlan } from '../../utils/validaciones.js'
 import '../../styles/Listados.css'
 import '../../styles/Crud.css'
 
+// La lista llega por props desde App; los estados locales controlan filtros, borrador y mensajes.
 function Planes({ lista, setLista, socios }) {
   const [busqueda, setBusqueda] = useState('')
+  // null significa formulario cerrado; un objeto representa el borrador abierto.
   const [formulario, setFormulario] = useState(null)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
+  // Este resultado se recalcula al cambiar datos o filtros; no modifica la lista original.
   const visibles = lista.filter((plan) => normalizar(plan.nombre + ' ' + plan.beneficios).includes(normalizar(busqueda)))
   const precios = lista.map((plan) => plan.precio)
 
+  // Con un registro copia el plan para editar; sin argumento prepara un alta con valores iniciales.
   function abrir(plan) {
     setFormulario(plan ? { ...plan } : { id: null, nombre: '', precio: '', beneficios: '' })
     setError('')
     setMensaje('')
   }
 
+  // Actualiza un solo campo del borrador y retira el error anterior para permitir corregirlo.
   function cambiar(campo, valor) {
     setFormulario({ ...formulario, [campo]: valor })
     setError('')
   }
 
+  // Prepara y valida el plan. setLista comunica la nueva lista al padre y actualiza las otras pantallas.
   function guardar(evento) {
     evento.preventDefault()
     // Los inputs numéricos entregan texto: lo convertimos antes de guardar.
@@ -38,6 +44,7 @@ function Planes({ lista, setLista, socios }) {
     setBusqueda('')
   }
 
+  // Revisa las condiciones y pide confirmacion antes de quitar el registro de la lista compartida.
   function eliminar(plan) {
     // Evitamos que queden socios apuntando a un plan que ya no existe.
     if (socios.some((socio) => socio.planId === plan.id)) {

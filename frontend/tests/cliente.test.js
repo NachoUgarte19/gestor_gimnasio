@@ -1,3 +1,4 @@
+// Pruebas de funciones de JavaScript con el ejecutor de Node; no requieren un navegador.
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
@@ -6,6 +7,7 @@ import {
 } from '../src/modules/cliente/clienteUtils.js'
 
 // Fecha fija para comprobar los límites de horario sin depender del reloj real.
+// Fecha fija para que el resultado sea repetible. En JavaScript el mes 10 corresponde a noviembre.
 const ahora = new Date(2026, 10, 2, 9, 0)
 const socio = { id: 1, nombre: 'Ana', apellido: 'Pérez', activo: true, dni: '40123456', planId: 3, fechaIngreso: '2026-10-05' }
 const clase = { id: 1, nombre: 'Yoga', dia: 'Lunes', horario: '10:00', cupo: 2 }

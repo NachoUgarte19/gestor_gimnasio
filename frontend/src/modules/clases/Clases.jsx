@@ -7,28 +7,34 @@ import { validarClase } from '../../utils/validaciones.js'
 import '../../styles/Listados.css'
 import '../../styles/Crud.css'
 
+// La lista llega por props desde App; los estados locales controlan filtros, borrador y mensajes.
 function Clases({ lista, setLista, reservas }) {
   const [busqueda, setBusqueda] = useState('')
   const [dia, setDia] = useState('')
+  // null significa formulario cerrado; un objeto representa el borrador abierto.
   const [formulario, setFormulario] = useState(null)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
+  // Este resultado se recalcula al cambiar datos o filtros; no modifica la lista original.
   const visibles = lista.filter((clase) =>
     normalizar(clase.nombre + ' ' + clase.instructor + ' ' + clase.dia).includes(normalizar(busqueda)) && (!dia || clase.dia === dia)
   )
   const mañana = lista.filter((clase) => clase.horario < '12:00').length
 
+  // Con un registro copia el clase para editar; sin argumento prepara un alta con valores iniciales.
   function abrir(clase) {
     setFormulario(clase ? { ...clase } : { id: null, nombre: '', instructor: '', dia: 'Lunes', horario: '', cupo: '' })
     setError('')
     setMensaje('')
   }
 
+  // Actualiza un solo campo del borrador y retira el error anterior para permitir corregirlo.
   function cambiar(campo, valor) {
     setFormulario({ ...formulario, [campo]: valor })
     setError('')
   }
 
+  // Prepara y valida el clase. setLista comunica la nueva lista al padre y actualiza las otras pantallas.
   function guardar(evento) {
     evento.preventDefault()
     const datos = { ...formulario, nombre: formulario.nombre.trim(), instructor: formulario.instructor.trim(), cupo: Number(formulario.cupo) }
@@ -42,6 +48,7 @@ function Clases({ lista, setLista, reservas }) {
     setDia('')
   }
 
+  // Revisa las condiciones y pide confirmacion antes de quitar el registro de la lista compartida.
   function eliminar(clase) {
     if (reservas.some((reserva) => reserva.claseId === clase.id)) {
       setMensaje('')

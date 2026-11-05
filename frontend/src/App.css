@@ -9,6 +9,7 @@
 .view-switch a[aria-current="page"] { border-color: #2b6aa5; background: #eaf3fb; color: #245f99; font-weight: 650; }
 .view-switch a:focus-visible { outline: 3px solid #2b6aa5; outline-offset: 3px; }
 
+/* La barra lateral y el contenido comparten el ancho disponible en escritorio. */
 .app-shell {
   display: flex;
   min-height: 100vh;
@@ -137,6 +138,7 @@ button:focus-visible { outline: 3px solid #9ac8ef; outline-offset: 2px; }
 .privacy-link { min-height: 40px; padding: 8px 0; border: 0; background: transparent; color: #245f99; font: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .privacy-link:hover { color: #203449; }
 
+/* Estas reglas adaptan la distribucion al ancho de pantalla, sin cambiar los datos. */
 @media (max-width: 700px) {
   .view-switch { padding: 14px 18px; }
   .app-shell { flex-direction: column; }

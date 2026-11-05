@@ -7,19 +7,23 @@ import { validarSocio } from '../../utils/validaciones.js'
 import './Socios.css'
 import '../../styles/Crud.css'
 
+// La lista llega por props desde App; los estados locales controlan filtros, borrador y mensajes.
 function Socios({ lista, setLista, planes, reservas, pagos }) {
   const [busqueda, setBusqueda] = useState('')
   const [estado, setEstado] = useState('todos')
+  // null significa formulario cerrado; un objeto representa el borrador abierto.
   const [formulario, setFormulario] = useState(null)
   const [error, setError] = useState('')
   const [mensaje, setMensaje] = useState('')
 
+  // Este resultado se recalcula al cambiar datos o filtros; no modifica la lista original.
   const visibles = lista.filter((socio) => {
     const coincide = normalizar(socio.nombre + ' ' + socio.apellido + ' ' + socio.dni + ' ' + socio.email).includes(normalizar(busqueda))
     return coincide && (estado === 'todos' || socio.activo === (estado === 'activos'))
   })
   const activos = lista.filter((socio) => socio.activo).length
 
+  // Con un registro copia el socio para editar; sin argumento prepara un alta con valores iniciales.
   function abrir(socio) {
     // Al editar copiamos el objeto: la tabla cambia recién al guardar.
     setFormulario(socio ? { ...socio } : {
@@ -30,11 +34,13 @@ function Socios({ lista, setLista, planes, reservas, pagos }) {
     setMensaje('')
   }
 
+  // Actualiza un solo campo del borrador y retira el error anterior para permitir corregirlo.
   function cambiar(campo, valor) {
     setFormulario({ ...formulario, [campo]: valor })
     setError('')
   }
 
+  // Prepara y valida el socio. setLista comunica la nueva lista al padre y actualiza las otras pantallas.
   function guardar(evento) {
     evento.preventDefault()
     const datos = {
@@ -54,6 +60,7 @@ function Socios({ lista, setLista, planes, reservas, pagos }) {
     setEstado('todos')
   }
 
+  // Revisa las condiciones y pide confirmacion antes de quitar el registro de la lista compartida.
   function eliminar(socio) {
     // Conservamos el historial: para una baja habitual se usa el estado Inactivo.
     if (reservas.some((reserva) => reserva.socioId === socio.id) || pagos.some((pago) => pago.socioId === socio.id)) {

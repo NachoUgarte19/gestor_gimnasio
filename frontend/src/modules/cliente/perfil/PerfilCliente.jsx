@@ -3,18 +3,23 @@ import { fechaTexto, mostrarFecha } from '../../../utils/fechas.js'
 import { mostrarPesos } from '../../../utils/listas.js'
 import { prepararPerfil } from '../clienteUtils.js'
 
+// Muestra datos de la cuenta, plan y pagos propios. formulario contiene un borrador hasta presionar Guardar.
 function PerfilCliente({ socio, planes, pagos, onGuardar, onMensaje, onPrivacidad }) {
+  // null significa formulario cerrado; un objeto representa el borrador abierto.
   const [formulario, setFormulario] = useState(null)
   const [verPagos, setVerPagos] = useState(false)
   const plan = planes.find((item) => item.id === socio.planId)
+  // Solo se muestran pagos de esta cuenta, ordenados del mas reciente al mas antiguo.
   const propios = pagos.filter((pago) => pago.socioId === socio.id)
     .sort((a, b) => b.fecha.localeCompare(a.fecha) || b.id - a.id)
   const ultimo = propios[0]
 
+  // Copia el borrador y reemplaza el campo indicado; todavia no modifica el registro compartido.
   function cambiar(campo, valor) {
     setFormulario({ ...formulario, [campo]: valor })
   }
 
+  // Evita recargar la pagina, prepara los campos editables y cierra el formulario si el padre acepta los datos.
   function guardar(evento) {
     evento.preventDefault()
     if (onGuardar(prepararPerfil(socio, formulario))) setFormulario(null)

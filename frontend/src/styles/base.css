@@ -6,6 +6,7 @@
   text-rendering: optimizeLegibility;
 }
 
+/* box-sizing incluye bordes y relleno en el ancho declarado para facilitar el layout. */
 * {
   box-sizing: border-box;
 }
